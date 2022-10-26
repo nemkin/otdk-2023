@@ -10,7 +10,7 @@
 \newcommand{\vikkonzulensAVezeteknev}{Friedl}
 \newcommand{\vikkonzulensAKeresztnev}{Katalin}
 
-\newcommand{\vikcim}{Simulation of quantum walks\\on a classical computer}
+\newcommand{\vikcim}{Optimizing memory usage\\in quantum algorithm simulation}
 \newcommand{\viktanszek}{\bmeszit}
 \newcommand{\vikdoktipus}{\msc}
 
@@ -27,16 +27,44 @@
 \include{include/titlepage-tdk}
 \tableofcontents\vfill
 
-\include{content/begin/abstract}
+\include{content/01_abstract}
 \pagenumbering{arabic}
-\include{content/begin/introduction}
-\include{content/math/klasszikus_setak}
-\include{content/math/kvantum}
-\include{content/math/kvantum_setak}
-\include{content/program/program}
-\include{content/results/results}
-\include{content/end/end}
-\include{content/end/acknowledgement}
+
+
+\chapter{Bevezető}
+
+Kvantuminformatika, bevezetés, számítógépek fajtái, Qiskit
+- Milyen kvantumszámítógépek vannak:
+  Annealer
+  Simulator
+  Universal
+  
+\chapter{Motiváció}
+
+Protein folding problémája Qiskitben.
+
+
+\chapter{Program felépítése}
+
+\section{Regiszerek működése}
+
+\section{Operátorok működése}
+
+\chapter{Megoldandó feladat: Grover és Sudoku}
+
+\section{Grover}
+
+\section{Sudoku}
+
+\chapter{Tesztelés}
+\section{Memóriafelhasználás python kódban}
+\section{Memóriafelhasználás C++ kódomban}
+
+% \include{content/02_introduction}
+% \include{content/03_quantum}
+% \include{content/04_program}
+
+% TODO \chapter{Acknowledgement}
 
 % List of Figures, Tables
 %\listoffigures\addcontentsline{toc}{chapter}{\listfigurename}
@@ -45,7 +73,7 @@
 % Bibliography
 \nocite{*}
 \addcontentsline{toc}{chapter}{\bibname}
-\bibliography{bib/mybib}
+\bibliography{include/mybib}
 
 % Appendices
 \include{content/end/appendices}

@@ -24,10 +24,10 @@ The architecture of my simulator program employs the Strategy design pattern, wh
 
 ''Define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it.''~\cite{DesignPatterns}
 
-\begin{figure}[H]
-  \includegraphics[width=\linewidth]{./figures/program/strategy.png}
-  \caption{UML diagram for the Strategy design pattern from~\cite{DesignPatterns}}
-\end{figure}
+% \begin{figure}[H]
+%  \includegraphics[width=\linewidth]{./figures/program/strategy.png}
+%  \caption{UML diagram for the Strategy design pattern from~\cite{DesignPatterns}}
+% \end{figure}
 
 This is a great design pattern for research purposes since it facilitates experimentation with various algorithms for the same purpose. It also makes the code easily readable, as the Strategy interface provides an abstraction layer between the Context and the concrete implementation.
 
@@ -45,10 +45,10 @@ The source code of the software can be divided into three parts:
     \item Running, configuration and result collection
 \end{itemize}
 
-\begin{figure}[H]
-  \includegraphics[width=\linewidth]{./figures/program/uml.png}
-  \caption{UML diagram for the Graph models and Simulators}
-\end{figure}
+% \begin{figure}[H]
+%  \includegraphics[width=\linewidth]{./figures/program/uml.png}
+%  \caption{UML diagram for the Graph models and Simulators}
+%\end{figure}
 
 On the UML diagram above, the SubGraph class is a Strategy, with the following ConcreteStrategy implementations:
 
@@ -86,4 +86,4 @@ Using the above classes, I developed a framework in which experimental runs can 
 
 My simulator software is available under the open-source MIT license on my personal Github account, under the following link:
 
-\url{https://github.com/nemkin/quantum}
+\url{https://github.com/nemkin/qmem}

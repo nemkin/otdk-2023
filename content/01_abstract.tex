@@ -1,0 +1,39 @@
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+\selecthungarian
+
+%----------------------------------------------------------------------------
+% Abstract in Hungarian
+%----------------------------------------------------------------------------
+\chapter*{Kivonat}\addcontentsline{toc}{chapter}{Kivonat}
+
+A piacon jelenleg elérhető kvantumalgoritmus-futtató keretrendszerek (IBM Qiskit, Google Cirq) a számításaikat a qubitek számában exponenciális méretű unitér mátrixokkal valósítják meg. Ennek következménye, hogy igen kis méretű bemenetek esetén is meglehetősen nagy mennyiségű memóriára van szükségük. Bár a meglévő rendszerek használnak bizonyos optimalizációs módszereket, ezek sokszor nem tudnak nagyságrendi javulást eredményezni (például a ritka mátrixos tárolási mód) vagy csak nagyon speciális algoritmusokra alkalmazhatók (Clifford-kapuk). A gyakorlatban ez azt jelenti, hogy az óriáscégekkel szemben egy átlagos felhasználó sok algoritmus esetében még viszonylag kis méretű bemeneteken sem tud ésszerű keretek között kísérletezni, az túl nagy hardverköltséggel járna.
+
+A hardverszükséglet csökkenthető olyan algoritmussal, amely memóriát spórol, megnövekedett futásidőért cserébe. Például az unitér mátrixok éppen szükséges részmátrixai futás közben "on-the-fly" kiszámíthatóak, vagy akár a mátrixműveletek teljes egészükben helyettesíthetőek az azokkal ekvivalens hagyományos algoritmusokkal. Bár a korábban említett, a piacon elterjedt futtató keretrendszerek nyílt forráskódúak, sajnos az architektúrájuk szerves részét képezi az unitér mátrix tárolása, így azok bővítése ilyen irányban nem megoldható.
+
+Dolgozatomban ezért egy ilyen memóriaoptimalizációs módszertan kidolgozásával és az ahhoz kapcsolódó, általános felhasználási körű kvantumalgoritmus-szimuláló keretrendszer megvalósításával foglalkozom. Bemutatom azokat a klasszikus algoritmus és architektúra tervezési lépéseket, melyek a rendszer alapját képezik, továbbá azt, hogy a keretrendszert hogyan lehet kvantumalgoritmusokkal kapcsolatos kutatások során felhasználni. A keretrendszer célja elsősorban az, hogy a kisebb erőforrással rendelkező felhasználók számára megnövelje a gyakorlati tesztek futtathatóságának a korlátait és ezzel elősegítse az elméleti kutatómunkát. Ennek megfelelően az elkészült rendszert és a hozzá tartozó dokumentációt mindenki számára elérhetővé teszem open-source licenszelt formában az interneten.
+
+\vfill
+\selectenglish
+
+
+%----------------------------------------------------------------------------
+% Abstract in English
+%----------------------------------------------------------------------------
+\chapter*{Abstract}\addcontentsline{toc}{chapter}{Abstract}
+
+The quantum algorithm execution frameworks currently available on the market (IBM Qiskit, Google Cirq) implement their computations using unitary matrices of exponential size in the number of qubits. Consequently, they require large amounts of memory, even for small inputs. Although existing frameworks use some optimization methods, these often cannot provide improvements of an order of magnitude (e.g. sparse matrix storage mode) or are only applicable in special cases (Clifford gates). In practice, in contrast to a large company, the average user cannot experiment within reasonable limits, for many algorithms, even with relatively small inputs, as this would incur outstanding hardware costs.
+
+Algorithms that save memory in exchange for increased runtime can reduce these hardware expenses. For example, any submatrix of the unitary matrix can be computed on-the-fly during runtime, or the equivalent conventional algorithm can replace the unitary matrix operation. Although the currently available frameworks are open-source, they store the unitary matrices in memory as an integral part of their architecture, making it impossible to incorporate these memory optimization techniques.
+
+In my paper, I focus on developing these memory optimization methodologies and implementing them in a general-purpose quantum algorithm simulation framework. I present the classical algorithm and architecture design steps that form the basis of the system and demonstrate how this system can be used in quantum algorithm research. The framework is primarily intended to be used in a resource-constrained environment to enable running tests on a larger number of qubits, thus facilitating theoretical research. Accordingly, I will make the system and its documentation available to everyone in an open-source licensed form.
+
+In recent years, there has been an increasing focus on quantum informatics. Influential global companies such as IBM, Google, Microsoft, and Amazon have invested significant amounts into studying and developing hardware and software for this sector, while the European Union and Hungary have launched several programs to accelerate quantum research.
+
+\vfill
+\selectthesislanguage
+
+\newcounter{romanPage}
+\setcounter{romanPage}{\value{page}}
+\stepcounter{romanPage}
