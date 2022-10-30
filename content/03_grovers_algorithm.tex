@@ -129,5 +129,74 @@ And an example for $n=4$ is the following:
 
 \section{Designing a quantum algorithm solver based on Grover's search}
 
-The first step is to encode the problem using quantum registers.
+The first step is to encode the problem using quantum registers. The size-$n$ Sudoku table has $n^2$ rows and columns. Every cell in it is represented by a quantum register.
 
+\begin{align*}
+\text{cell}[i][j] = \ket{0\dots{}010\dots{}0}, & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j<n^2
+\end{align*}
+
+The length (qubits) of the register is $n^2$ and the number in the cell is represented using one-hot encoding.
+
+\begin{align*}
+\text{cell}[i][j][k] = \begin{cases}
+\ket{1} & \text{cell}_{(i,j)}\text{'s number is }(k+1) \\
+\ket{0} & \text{otherwise}
+\end{cases}, & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j,k<n^2
+\end{align*}
+
+In Qiskit, once the qubit registers are added to a circuit, they can be indexed using a single dimensional index, such as:
+
+\begin{align*}
+\text{cell}[i][j][k] = \text{cell}[i\cdot{}n^4+j\cdot{}n^2+k], & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j,k<n^2
+\end{align*}
+
+I will verify if a solution is correct, using uniqueness constraints. These constraints will all be using the same scheme, which I define as UNIQUE\_ONE($[x_0,\dots,{}x_{n-1}]$) constraint, where $[x_0,\dots,{}x_{n-1}]$ is a list of single-dimensional indexes. If a UNIQUE\_ONE($[x_0,\dots,{}x_{n-1}]$) constraint is applied, the qubits with indexes $[x_0,\dots,{}x_{n-1}]$ must contain exactly one $\ket{1}$.
+
+The verifications are the following:
+
+\textbf{Cells should be one-hot encoded}
+
+Every $(i,j)$ row and column index pair corresponds to a cell. The qubits in this cells, indexed by $k$ shall have a single $\ket{1}$ among them.
+
+\begin{align*}
+    \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}k<n^2}), & \hspace{3mm} \forall{}0\leq{}i,j<n^2
+\end{align*}
+
+\textbf{Numbers in each row should be unique}
+
+For every $i$ row and every $k$ one-hot encoded number position, the $k$ number should be present in the $i$th row exactly once, indexed by the $j$ columns:
+
+\begin{align*}
+    \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}j<n^2}), & \hspace{3mm} \forall{}0\leq{}i,k<n^2
+\end{align*}
+
+\textbf{Numbers in each column should be unique}
+
+For every $j$ column and every $k$ one-hot encoded number position, the $k$ number should be present in the $j$th column exactly once, indexed by the $i$ rows:
+
+\begin{align*}
+    \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}j<n^2}), & \hspace{3mm} \forall{}0\leq{}i,k<n^2
+\end{align*}
+
+\textb{Numbers in each square should be unique}
+
+In order to create this constraint, the row and column indexes must be taken apart into an inner and outer index:
+
+\begin{align*}
+i = i_{outer}\cdot{}n + i_{inner} \\
+j = j_{outer}\cdot{}n + j_{inner} \\
+\end{align*}
+
+This way $i_{outer}$ and $j_{outer}$ index the squares the constraint is applied to, while $i_{inner}$ and $j_{inner}$ index their internal cells.
+
+Then, for every square, indexed by the $(i_{outer}, j_{outer})$ pair and every $k$ one-hot encoded number position, the $k$ number should be present in the $(i_{outer}, j_{outer})$ square exactly once, indexed by the $(i_{inner}, j_{inner})$ cell index pairs:
+
+\begin{align*}
+    \text{UNIQUE\_ONE}([(i_{outer}\cdot{}n + i_{inner})\cdot{}n^4 + (j_{outer}\cdot{}n + j_{inner})\cdot{}n^2 + k]_{0\leq{}i_{inner},j_{inner}<n}), \\ \forall{}0\leq{}i_{outer},j_{outer}<n,\forall{}0\leq{}k<n^2
+\end{align*}
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=0.3\linewidth]{content/assets/03_grovers_algorithm/weighted_adder.png}
+    \caption{WeightedAdder circuit}
+\end{figure}
