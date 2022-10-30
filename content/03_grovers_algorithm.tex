@@ -1,5 +1,7 @@
 \chapter{Grover's algorithm}
 
+\section{What is it and why it is so important?}
+
 [TODO: Cite: https://qiskit.org/textbook/ch-algorithms/grover.html]
 
 Grover's search algorithm is a quantum algorithm framework, that takes a user-defined solution verifier algorithm (the oracle) and turns it into a $\Theta(\sqrt{N})$ solver. This provides a quadratic speedup over the classical brute force equivalent.
@@ -17,22 +19,27 @@ Grover doesn't need to know the structure of the original problem, the relations
     \label{fig:grover_uniform}
 \end{figure}
 
-Then, it uses the verifier algorithm to manipulate their probabilities until the correct entities' probabilities are very high, while the incorrect entities' probabilities are very low.
+Then, it uses the verifier algorithm in a process to manipulate their probabilities until the correct entities' probabilities are very high, while the incorrect entities' probabilities are very low. This process is called amplitude amplification.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{content/assets/03_grovers_algorithm/grover_final.jpg}
-    \caption{Grover starts out with the uniform distribution}
+    \caption{Grover amplifies the amplitude(s) of the correct solution(s)}
     \label{fig:grover_uniform}
 \end{figure}
 
 Finally, it samples from this probability distribution, which results in a correct solution entity with a high chance.
 
-Working with a probability distribution over an exponentially large set of entities is only possible in a memory-efficient way on a quantum computer, thanks to the quantum physical nature of qubits. A register of classical bits can only represent a single entity, we would need separate registers to represent a set and we can only operate on the entire set in a linear fashion, one register at a time. In contrast, a register of quantum bits, or 'qubits' itself can represent a set of entities from the domain using the quantum physical phenomenon of superposition.
+Working with a probability distribution over an exponentially large set of entities is only possible in a memory-efficient way on a quantum computer, thanks to the quantum physical nature of qubits.
 
-When we read this register's contants, we can only sample a single element from the probability distribution, we cannot iterate all.
-
-The probability distribution over this set and some of the probability distributions (especially the ones that have zeros in them) are only possible because of entanglement.
+A register of classical bits can only represent a single entity (encoded as a binary number), we would need separate registers to represent a set and we can only operate on the entire set in a linear fashion, one register at a time. In contrast, a register of quantum bits, or 'qubits' itself can represent a set of entities (a set of binary numbers) from the domain using the quantum physical phenomenon of superposition with a probability distribution over these elements.
 
 The manipulation of these probabilities happens using quantum operators or gates, which are the basis of all quantum algorithms on gated general-purpose quantum computers.
 
+However, we do not have access to this probability distribution or the high probability elements in it. The only thing we can do is read the register, which is an operation that samples a single entity from the current probability distribution in the register, destroying it in the process. We are unable to 'iterate' the contents of the register or know what the probability of the resulting element was from the sampling.
+
+This is the reason why quantum parallelism is not as trivial as the name suggests: while we can run the computation itself in parallel, gaining access to the information that we stored in the register is difficult and destructive. Amplitude amplification is a technique that we use to fix this problem, however it requires $O(\sqrt{N})$ time, where $N$ is the size of the problem's domain, where $N=2^n$ if the quantum register has $n$ qubits.
+
+One of the most important property of quantum registers is that they can even represent probability distributions, even ones where the individual qubits are \textbf{not independent}. This is called quantum entanglement.
+
+One of the simplest forms of quantum entanglement are Bell states, which can occur between two qubits. In one of these Bell states, the probability distribution of our 2 qubit quantum registers is "$00$" with $50\%$ probability and "$11$" with $50\%$. Reading the contents of just the first qubit will result in a $50\%$ chance of reading a $0$ and a $50\%$ chance of reading a $1$. However, once we know the result from the first qubit, we can be $100\%$ sure, that when we sample the second qubit, we will get the same number as a result from it.
