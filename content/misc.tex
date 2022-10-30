@@ -1,0 +1,108 @@
+Most quantum computing frameworks offer running algorithms on both quantum hardware and simulating them using my computer or running the simulation on cloud hosted classical virtual machines.
+
+Real quantum hardware is currently very limited: not a significant amount of qubits, it is expensive and the results are error-prone, since current implementations are still noisy. Simulations on the other hand run on classical computers: we can be sure (if the program itself is fault-free), that the results are correct. 
+
+Quantum computing frameworks, such as Qiskit (IBM), Cirq (Google), Braket (Amazon), Q# (Microsoft) are all designed to allow someone to use the quantum computers in the cloud of these companies while also allowing them to run a simulated equivalent computation on a classical hardware. The focus of the design is the actual quantum hardware, not the simulation and not to be memory-efficient.
+
+\chapter{Motivation}
+
+Bioinformatics is an interdisciplinary field between computer science and biology. Its main goal is to answer biological questions by transforming them into computational problems and providing efficient algorithmic solutions to them. Researching bioinformatics has a significant impact on our everyday lives since discoveries in this area can help us solve many of today’s major global problems, for example, aiding the creation of more effective medical treatments, advancing our understanding of genetic diseases, developing resistant crops to tackle a global food crisis or inventing novel technologies to reduce and revert environmental pollution. Unfortunately, many of the applicable problems in bioinformatics turn out to be computationally hard problems. Despite all the research effort, no sufficiently fast, deterministic solutions were found to these problems with the current limitations of our hardware. In recent years, the field of quantum informatics has experienced increased attention from governmental entities and global corporations, who invested significantly into designing new types of hardware based on quantum physical phenomena and developing complementary software capable of solving previously challenging problems. While quantum computing research is still in its early stages and the limits of quantum hardware are unknown, the availability of this different computational model has allowed new forms of algorithmic design to emerge, with promising theoretical results. In my dissertation, I introduce the mathematical framework of quantum computation, particularly quantum walks and search algorithms. I investigate the implementation details of quantum walks and showcase them via a simulator software which can aid understanding and visualizing the unfamiliar behaviour of these algorithms. I present a general overview of computational bioinformatics problems, particularly protein folding, detailing the different models of protein behaviour, and analyse the classical and quantum possibilities for solutions. 
+
+What is the current state of quantum computers for quantum algorithms research?
+
+Three types of quantum computers are being developed at this moment: Quantum Annealers, Analog Quantum Simulators and General-purpose / Universal Quantum Computers.
+
+[https://docs.dwavesys.com/docs/latest/c_gs_2.html]
+Quantum Annealers deal with problems that can be translated into a specific type of optimization problem. The equations that describe a specific problem can then be embedded into a physical quantum system present on the computer. This physical system will reach its energy minimum, which can be decoded into a solution to the optimization problem.
+
+[https://www.scientificamerican.com/article/analog-simulators-could-be-shortcut-to-universal-quantum-computers/]
+
+Analog quantum simulators are special-purpose computers, designed to solve specific problems, such as how room-temperature superconductors work or how a particular protein folds.
+
+[https://jackkrupansky.medium.com/what-is-a-universal-quantum-computer-db183fd1f15a]
+
+General-purpose quantum computers
+
+They are still not ready yet. Not good for real-world applications.
+
+They are comprised of qubits, which can be put into a superposition state and entangled. We can operate on these qubits using a universal quantum logic gate set.
+
+Using quantum parallelism they are able to operate on a large number of possible solutions at the same time.
+
+Who is building them?
+
+https://aws.amazon.com/braket/
+
+Gate-based ion-trap processors
+IONQ
+
+Trapped-ion quantum computers implement qubits using electronic states of charged atoms called ions. The ions are confined and suspended in free space using electromagnetic fields.
+
+Gate-based superconducting processors
+https://aws.amazon.com/braket/pricing/
+
+Superconducting qubits are built with superconducting electric circuits operating at cryogenic temperature.
+
+Rigetti
+
+
+https://www.rigetti.com/
+40 qubites számítógépek
+
+IBM
+Google
+Current challenges?
+We need more qubits.
+Longer coherence times.
+Error correction.
+
+3. Universal Quantum
+
+https://www.ibm.com/topics/quantum-computing
+
+IBM's Qiskit framework
+
+Qiskit Runtime is our quantum computing service and programming model for building, optimizing, and executing workloads at scale using Qiskit.
+
+IQM
+
+IBM Qiskit
+Google Cirq
+
+Amazon - rents from DWave etc
+Microsoft - rents from etc
+
+In 2019, Google's 54 quantum-bit Sycamore processor successfully beat today's fastest supercomputer to perform a specific computation, achieving quantum supremacy.
+
+
+Qiskit Runtime IBM Cloud:
+https://cloud.ibm.com/catalog/services/qiskit-runtime-beta
+
+Lite
+	IBM Quantum Simulators access
+	Free
+	
+Standard
+	IBM Quantum Systems access
+	€1.60144 EUR/Qiskit Runtime Seconds
+
+
+Simulators = 5 (QASM, statevector, mps, stabilizer, and extended stabilizer). Time limits = program-specific up to 3 hours.
+
+
+
+
+IBM Quantum System One
+27 qubit Falcon
+65 qubit Hummingbird
+127 qubit Eagle
+
+Qiskit is IBM's framework and service for programming and running quantum algorithms.
+
+
+Due to superposition, a quantum computer having 100 qubits represents 2^100 solutions at the same time. Tech giants like Microsoft, IBM, and Google have started building models that have the capability of replicating the circuit model of a classical computer.
+
+Current state of quantum computers
+
+
+

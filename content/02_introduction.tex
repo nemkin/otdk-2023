@@ -1,14 +1,43 @@
 \chapter{Introduction}
 
+\section{Why are quantum computers interesting?}
 
-Why are we interested in quantum computers?
-
-Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article, where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
+Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article (https://link.springer.com/article/10.1007/BF02650179), where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
 
 The current computational model we use for classical computers is called the Turing-machine. These new types of computers are so different from classical ones that they run based on a completely different set of rules. Following the work of many computer scientists (Benioff, Deutsch, Bernstein and Vazirani), the computational model for Quantum computers was mathematically defined in the late 1980s: the Quantum Turing machine.
 
 In the classical world, on the Turing machine, mathematicians and computer scientists have been struggling with the same problem for more than a hundred years: a solution to a set of computational problems that could unlock many real-world use cases in many industries [TODO: list examples]. These are called the NP-complete. This problem has eluded computer scientists for a century. This problem is so big that it is one of the famous Millennium Prize Problems set by the Clay Mathematics Institute, the P versus NP problem.
 
-In the quantum world, the rules of the Quantum Turing machine are different [TODO Scott Aaronson article about what we can do with Quantum computers]. This gives us hope that we could use Quantum Computers to solve the problems fast we are currently struggling in the classical world with.
+Using quantum parallelism quantum machines are able to operate on a large number of possible solutions at the same time. [TODO Scott Aaronson article about what we can do with Quantum computers]. This gives us hope that we could use Quantum Computers to solve the problems fast we are currently struggling in the classical world with.
 
-In recent years, there has been an increasing focus on quantum informatics. Influential global companies such as IBM, Google, Microsoft, and Amazon have invested significant amounts into studying and developing hardware and software for this sector, while the European Union and Hungary have launched several programs to accelerate quantum research.
+\section{What is the motivation for this report?}
+
+An interesting area for algorithmic research is bioinformatics. Many problems here have significant impact on our everyday lives since discoveries in this area can help us solve many of today’s major global problems, for example, aiding the creation of more effective medical treatments, advancing our understanding of genetic diseases, developing resistant crops to tackle a global food crisis or inventing novel technologies to reduce and revert environmental pollution. I am particularly interested in computer-aided drug design, where problems such as protein folding and molecular docking turn out to be NP-hard ones, which means that despite decades of effort, we have yet to come up with efficient solutions to them using classical computers.
+
+In the past year I have been researching protein folding and how to implement it on a general-purpose quantum computer. I have ran into a significant problem: I was unable to run any experiments of usable size, mainly due to limitations in memory. Due to quantum parallelism, the memory requirements of running a quantum calculation simulation are super-exponential. In particular, there is one component in Qiskit, which seemed to come back in any form of model I have tried to implement: a quantum gate for taking the sum of $n$ qubits, called the WeightedAdder class. 
+
+[TODO: Kép a weighted adder class kapujáról qiskitből]
+
+This component came up, because a natural way to encode protein structures is by creating a 3D grid and laying the aminoacid chain down on it:
+
+[TODO: Valami kép, ezt nem kéne magyarázni sokat.]
+
+From a single vertex in a 3D grid, we can step in $6$ directions: up, down, left, right, inwards and outwards. We can encode these naturally, using one-hot encoding, by introducing $6$ bits of information.
+
+[TODO: kép a directionökről]
+
+If we assume that the chain starts in the origin, then we can encode a chain shape by giving the directions of the $(n-1)$ steps it takes.
+
+[TODO: kép...]
+
+A chain like this is viable, when it doesn't cross over itself. A chain's optimality is assessed by counting how many pairs of various aminoacids are neighbouring each other. To answer both of these questions, we must be able to calculate relative distances between any two points of the chain. Using the directinal one-hot encoding model, these questions can be answered by taking the sum of some qubits.
+
+Using these operations, we can create a quantum oracle, that assesses the optimality of a particular chain and use Grover's quantum search algorithm to find the best possible solution.
+
+Unfortunately, while Qiskit itself is open-source, it's architecture (similarly to other quantum computing frameworks) is designed from the core to store the matrices of various operations (such as the WeightedAdder operation) in its memory and retrieve this information during simulation. This means that I am unable to correct this single operation in Qiskit.
+
+\section{What is the scope of this report?}
+
+In order to reduce the memory requirements for any quantum computation simulation, we have to be able to reduce storing large operation matrices in memory whenever we can. This requires a completely different architecture.
+
+The scope of this report is designing and implementing this architecture, particularly solving the problem with WeightedAdder. While the original motivation for the focus on this specific component comes from protein folding, bioinformatics is out of scope for this paper. Instead, I will be taking a much simpler problem, a generic version of Sudoku, which also requires the WeightedAdder component and Grover-search to be solved.
