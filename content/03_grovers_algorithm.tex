@@ -49,17 +49,18 @@ The simplest forms of quantum entanglement are Bell states, which can occur betw
 In the original Sudoku puzzle, we have a $(3^2\cdot{}3^2)$ table, that must be filled with numbers between $1$ and $9$. A correct solution to a puzzle is where each row, column and distinct $(3\cdot{}3)$ square has unique numbers.
 
 \begin{figure}[H]
+  \centering
+  \begin{subfigure}{.49\linewidth}
     \centering
-    \includegraphics[width=0.7\linewidth]{content/assets/03_grovers_algorithm/sudoku_3.png}
-    \caption{Empty Sudoku puzzle (Source:  \href{https://en.wikipedia.org/wiki/File:Sudoku_Puzzle_by_L2G-20050714_standardized_layout.svg}{Wikimedia Commons})}
-    \label{fig:my_label}
-\end{figure}
-
-\begin{figure}[H]
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_3_empty.png}
+    \caption{Empty}
+  \end{subfigure}
+  \begin{subfigure}{.49\linewidth}
     \centering
-    \includegraphics[width=0.7\linewidth]{content/assets/03_grovers_algorithm/sudoku_3_solved.png}
-    \caption{One possible Sudoku solution (Source:  \href{https://en.wikipedia.org/wiki/File:Sudoku_Puzzle_by_L2G-20050714_solution_standardized_layout.svg}{Wikimedia Commons})}
-    \label{fig:my_label}
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_3_solution.png}
+    \caption{Solved}
+  \end{subfigure}
+  \caption{Sudoku puzzle}
 \end{figure}
 
 In order demonstrate memory usage scaling, I generalize this Sudoku to a table of size $(n^2\cdot{} n^2)$, where each row, column and $(n\cdot{}n)$ distinct subsquare of the table must be a unique number from the $[1, n^2]$ interval.
@@ -67,48 +68,63 @@ In order demonstrate memory usage scaling, I generalize this Sudoku to a table o
 The only solution for $n=1$ is trivial.
 
 \begin{figure}[H]
+  \centering
+  \begin{subfigure}{.4\linewidth}
+  \end{subfigure}
+  \begin{subfigure}{.1\linewidth}
     \centering
-    \includegraphics[width=0.077\linewidth]{content/assets/03_grovers_algorithm/sudoku_1.png}
-    \caption{Empty Sudoku puzzle $n=1$}
-    \label{fig:my_label}
-\end{figure}
-
-\begin{figure}[H]
+    \includegraphics[width=0.6\linewidth]{content/assets/03_grovers_algorithm/sudoku_1_empty.png}
+    \caption{Empty}
+  \end{subfigure}
+  \begin{subfigure}{.1\linewidth}
     \centering
-    \includegraphics[width=0.077\linewidth]{content/assets/03_grovers_algorithm/sudoku_1_solved.png}
-    \caption{Solved Sudoku puzzle $n=1$}
-    \label{fig:my_label}
+    \includegraphics[width=0.6\linewidth]{content/assets/03_grovers_algorithm/sudoku_1_solution.png}
+    \caption{Solved}
+  \end{subfigure}
+  \begin{subfigure}{.4\linewidth}
+  \end{subfigure}
+  \caption{Sudoku puzzle $(n=1)$}
 \end{figure}
 
 An example solution for $n=2$.
 
 \begin{figure}[H]
   \centering
-  \begin{subfigure}{.5\linewidth}
-    \centering
-    \includegraphics[width=0.622\linewidth]{content/assets/03_grovers_algorithm/sudoku_2.png}
-    \caption{Empty Sudoku puzzle $(n=2)$}
+  \begin{subfigure}{.25\linewidth}
   \end{subfigure}
-  \begin{subfigure}{.5\linewidth}
+  \begin{subfigure}{.25\linewidth}
     \centering
-    \includegraphics[width=0.622\linewidth]{content/assets/03_grovers_algorithm/sudoku_2_solved.png}
-    \caption{Solved Sudoku puzule}
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_2_empty.png}
+    \caption{Empty}
   \end{subfigure}
-  \caption{}
+  \begin{subfigure}{.25\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_2_solution.png}
+    \caption{Solved}
+  \end{subfigure}
+  \begin{subfigure}{.25\linewidth}
+  \end{subfigure}
+  \caption{Sudoku puzzle $(n=2)$}
 \end{figure}
-
-
-
 
 $n=3$ is normal Sudoku.
 
 And an example for $n=4$ is the following:
 
-
-
-
-[TODO]
-
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}{.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_4_empty.png}
+    \caption{Empty}
+  \end{subfigure}
+  \begin{subfigure}{.49\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/sudoku_4_solution.png}
+    \caption{Solved}
+  \end{subfigure}
+  \caption{Sudoku puzzle $(n=4)$}
+\end{figure}
 
 
 \section{Designing a quantum algorithm solver based on Grover's search}
