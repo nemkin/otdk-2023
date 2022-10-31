@@ -1,0 +1,196 @@
+\chapter{Framework implementation}
+
+In this chapter I will examine the architecture and implementation of the framework that is capable of running simulations of gated general-purpose quantum computation.
+
+\section{Design goals}
+
+For an $n$ qubit register, the register itself must be stored using $2^n$ complex numbers (the probability amplitudes of each of the $2^n$ 0/1 variations), however the size of the matrix that is applied to it is $(2^n)^2$, which is considerably larger.
+
+Qiskit uses a lot of memory, because it stores every single quantum operator matrix in memory. Furhermore, even if the operation is the same, if it is applied multiple times, individual instances of the matrix are created. This is extremely wasteful.
+
+While it uses some techniques to reduce the memory allocations, such as sparse matrix representation, this cannot fundamentally get around the issue, that the architecture itself does not allow flexibility of operator representation.
+
+Instead of storing the matrices in-memory I will be designing a system where operators can be created without the need for a matrix representation at all, or when that is not possible the currently used column of the matrix can be generated "on-the-fly" for application.
+
+\section{Quantum registers}
+
+The first step in the implementation process is designing the inner workings of the quantum registers. In order to represent an $n$ qubit register, we must store $2^n$ complex numbers, the probability amplitudes of each of the possible 0/1 bit representations.
+
+\begin{align*}
+\ket{0\dots{}000} \rightarrow & \hspace{2mm} c_0 \\
+\ket{0\dots{}001} \rightarrow & \hspace{2mm}  c_1 \\
+\ket{0\dots{}010} \rightarrow & \hspace{2mm} c_2 \\
+\ket{0\dots{}011} \rightarrow & \hspace{2mm} c_3 \\
+\dots{} \\
+\ket{1\dots{}111} \rightarrow & \hspace{2mm} c_{2^n-1}
+\end{align*}
+
+Where $c_0,\dots{},c_{2^n-1}\in{}\mathds{C}$.
+
+When multiple registers are present in the system, handling operators that are only applied to some of the registers becomes problematic. Since qubits can be entangled, every single new register added to the system multiplies the amount of storage required for the probability amplitudes.
+
+\subsection{Presenting the solution on an example}
+
+For example when 3 registers are present, $R_0$ consisting of $1$ qubit, $R_1$ consisting of $1$ qubits and $R_2$ consisting of $2$ qubits, then the binary indexing sequence of the amplitude registers is the following: $\ket{R_{2,0},R_{2,1};R_{1,0};R_{0,0}}$.
+
+The probability amplitudes stored are the following:
+\begin{align*}
+\ket{00,0,0} \rightarrow & \hspace{2mm} c_{0} &
+\ket{10,0,0} \rightarrow & \hspace{2mm} c_{8} \\
+\ket{00,0,1} \rightarrow & \hspace{2mm} c_{1} &
+\ket{10,0,1} \rightarrow & \hspace{2mm} c_{9} \\
+\ket{00,1,0} \rightarrow & \hspace{2mm} c_{2} &
+\ket{10,1,0} \rightarrow & \hspace{2mm} c_{10} \\
+\ket{00,1,1} \rightarrow & \hspace{2mm} c_{3} &
+\ket{10,1,1} \rightarrow & \hspace{2mm} c_{11} \\
+\\
+\ket{01,0,0} \rightarrow & \hspace{2mm} c_{4} &
+\ket{11,0,0} \rightarrow & \hspace{2mm} c_{12} \\
+\ket{01,0,1} \rightarrow & \hspace{2mm} c_{5} &
+\ket{11,0,1} \rightarrow & \hspace{2mm} c_{13} \\
+\ket{01,1,0} \rightarrow & \hspace{2mm} c_{6} &
+\ket{11,1,0} \rightarrow & \hspace{2mm} c_{14} \\
+\ket{01,1,1} \rightarrow & \hspace{2mm} c_{7} &
+\ket{11,1,1} \rightarrow & \hspace{2mm} c_{15} \\
+\end{align*}
+
+The simplest solution would be to apply a "no-operation" operator, or the identity matrix to the remaining registers, however this will not scale well memory-wise with the number of registers increasing in the system.
+
+Instead I implemented the register handling in a way that allowed me to skip storing "no-operation" matrices in the memory completely. In order to apply an operator to only some registers in the system, the probability amplitudes are re-arranged in a way so that a continuous section of memory corresponds to a column of the matrix. This way, the matrix operation can be applied to sections of probability amplitudes iteratively.
+
+For example, if we apply a $3$ qubit operator to the registers $R_0$ and $R_2$, then the previous table is rearranged so that the bits corresponding to $R_0$ and $R_2$ are pushed towards the least significant bit in the following way:
+
+\begin{align*}
+\ket{R_{2,1},R_{2,1};R_{1,0};R_{0,0}} \rightarrow \ket{R_{1,0};\color{red}R_{2,0},R_{2,1};R_{0,0}\color{black}}
+\end{align*}
+
+
+\begin{align*}
+\ket{00,0,0} \rightarrow & \ket{0,\color{red}00,0\color{black}}' \rightarrow \color{red}c'_{0}\color{black}\rightarrow c_{0} &
+\ket{10,0,0} \rightarrow & \ket{0,\color{red}10,0\color{black}}' \rightarrow \color{red}c'_{4}\color{black}\rightarrow c_{8} \\
+\ket{00,0,1} \rightarrow & \ket{0,\color{red}00,1\color{black}}' \rightarrow \color{red}c'_{1}\color{black}\rightarrow c_{1} &
+\ket{10,0,1} \rightarrow & \ket{0,\color{red}10,1\color{black}}' \rightarrow \color{red}c'_{5}\color{black}\rightarrow c_{9} \\
+\ket{00,1,0} \rightarrow & \ket{1,\color{red}00,0\color{black}}' \rightarrow \color{red}c'_{8}\color{black}\rightarrow c_{2} &
+\ket{10,1,0} \rightarrow & \ket{1,\color{red}10,0\color{black}}' \rightarrow \color{red}c'_{12}\color{black}\rightarrow c_{10} \\
+\ket{00,1,1} \rightarrow & \ket{1,\color{red}00,1\color{black}}' \rightarrow \color{red}c'_{9}\color{black}\rightarrow c_{3} &
+\ket{10,1,1} \rightarrow & \ket{1,\color{red}10,1\color{black}}' \rightarrow \color{red}c'_{13}\color{black}\rightarrow c_{11} \\
+\\
+\ket{01,0,0} \rightarrow & \ket{0,\color{red}01,0\color{black}}' \rightarrow \color{red}c'_{2}\color{black}\rightarrow c_{4} &
+\ket{11,0,0} \rightarrow & \ket{0,\color{red}11,0\color{black}}' \rightarrow \color{red}c'_{6}\color{black}\rightarrow c_{12} \\
+\ket{01,0,1} \rightarrow & \ket{0,\color{red}01,1\color{black}}' \rightarrow \color{red}c'_{3}\color{black}\rightarrow c_{5} &
+\ket{11,0,1} \rightarrow & \ket{0,\color{red}11,1\color{black}}' \rightarrow \color{red}c'_{7}\color{black}\rightarrow c_{13} \\
+\ket{01,1,0} \rightarrow & \ket{1,\color{red}01,0\color{black}}' \rightarrow \color{red}c'_{10}\color{black}\rightarrow c_{6} &
+\ket{11,1,0} \rightarrow & \ket{1,\color{red}11,0\color{black}}' \rightarrow \color{red}c'_{14}\color{black}\rightarrow c_{14} \\
+\ket{01,1,1} \rightarrow & \ket{1,\color{red}01,1\color{black}}' \rightarrow \color{red}c'_{11}\color{black}\rightarrow c_{7} &
+\ket{11,1,1} \rightarrow & \ket{1,\color{red}11,1\color{black}}' \rightarrow \color{red}c'_{15}\color{black}\rightarrow c_{15} \\
+\end{align*}
+
+Then, the 3 qubit operator $U^{8\times{}8}$, which is an $(8\times8)$ matrix can be applied iteratively in the following way:
+
+\begin{enumerate}
+    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{0}$\\
+    $[c_0,c_1,c_4,c_5,c_8,c_9,c_{12},c_{13}] = [\color{red}c'_0,c'_1,c'_2,c'_3,c'_4,c'_5,c'_6,c'_7\color{black}]$\\
+    The resulting vector is the first half of the complete result:\\
+    $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7\color{black}]$
+    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{1}$\\
+    $[c_2,c_3,c_6,c_7,c_{10},c_{11},c_{14},c_{15}] = [\color{red}c'_8,c'_9,c'_{10},c'_{11},c'_{12},c'_{13},c'_{14},c'_{15}\color{black}]$\\
+    The resulting vector is the second half of the complete result:\\
+    $[\color{red}r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}]$
+    \item Iterate over all values for the untouched register $R_1$ and aggregate the results:\\
+     $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7,r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}]$.
+    \item Revert the mapping to the original indexes:\\ $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7,r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}] =$\\
+    $[r_0,r_1,r_4,r_5,r_8,r_9,r_{12},r_{13},r_2,r_3,r_6,r_7,r_{10},r_{11},r_{14},r_{15}]$.
+\end{enumerate}
+
+\subsection{General solution}
+
+Let there be $r$ registers in the system, 
+
+\begin{align*}
+\{R_0, \dots{}, R_{r-1}\}
+\end{align*}
+and let $n_i$ be number of qubits in register $R_i$, where $(0\leq{}i<r)$.
+
+The total number of qubits in the system is therefore
+
+\begin{align*}
+    n = \sum\limits_{i=0}^{r-1}n_{i}.
+\end{align*}
+
+Then, let $U$ be an operation, a unitary (square) matrix, that is applied to $k$ of the registers:
+
+\begin{align*}
+\{R_{r_0},\dots{},R_{r_{k-1}}\},\hspace{3mm} (0\leq{}r_j<r),\hspace{3mm} (0\leq{}j<k),\hspace{3mm} (k\leq{}r).
+\end{align*}
+
+The number of qubits $U$ must operate on is therefore
+
+\begin{align*}
+    m = \sum\limits_{j=0}^{k-1}l_{r_j}.
+\end{align*}
+
+which means that the $U$ matrix is of size $(M\times{}M)$, where
+
+\begin{align*}
+M = 2^m = \prod\limits_{j=0}^{k-1} 2^{(l_{r_j})}.
+\end{align*}
+
+The probability amplitudes for all possible register contents in the system are stored in a single array of complex numbers, of size 
+
+\begin{align*}
+N = 2^n = \prod\limits_{i=0}^{r-1} 2^{l_i}.
+\end{align*}
+
+Let us introduce binary indexing sequences on the register contents as
+
+\begin{align*}
+\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0},
+\end{align*}
+
+where a binary index sequence corresponds to a single complex number representing the probability amplitude of that qubit arrangement
+
+\begin{align*}
+\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} \rightarrow c_{B}\in{}\mathds{C}
+\end{align*}
+
+where $B$ is the number represented by 
+
+\begin{align*}
+B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}
+\end{align*}
+
+and
+
+\begin{align*}
+0\leq{}B<N. 
+\end{align*}
+
+The registers in the system partition these binary indexes the following way
+
+\begin{align*}
+\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} = \ket{R_{r-1} \hspace{1mm}|\hspace{1mm} R_{r-2}; \dots{}; R_2; R_1; R_0}.
+\end{align*}
+
+The program stores the $\{c_0,\dots{},c_{N-1}\}$ set of complex probability amplitudes in a continuous array $C$, where
+
+\begin{align*}
+C = [c_0,\dots{},c_{N-1}]
+\end{align*}
+
+To implement the application of the $U$ matrix to registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ in the system, the $C$ array must be rearranged, so that $U$ can be applied to continuous subsequences of $C$.
+
+This can be done via a bit-mapping on the binary indexing sequences. The qubits corresponding to the registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ are moved to the lower end of the sequence, while the rest of the registers to the upper end.
+
+Let us index the registers $U$ is not applied to with $\{s_0, \dots{}, s_{n-k-1}\}$, so that
+
+\begin{align*}
+\{0, \dots{}, n-1\} = \{r_0, \dots{}, r_{k-1}\} \dot{\cup} \{s_0, \dots{}, s_{n-k-1}\} 
+\end{align*}
+
+Then, the binary index sequence mapping is
+
+\begin{align*}
+\ket{R_{r-1}, R_{r-2}, \dots{}, R_2, R_1, R_0} \rightarrow \ket{R_{s_{r-k-1}}, \dots{}, R_{s_0} | R_{r_{k-1}}, \dots{}, R_{r_0} }
+\end{align*}
+
+\section{Quantum operators}
