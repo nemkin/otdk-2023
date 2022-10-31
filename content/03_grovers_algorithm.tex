@@ -126,8 +126,9 @@ And an example for $n=4$ is the following:
   \caption{Sudoku puzzle $(n=4)$}
 \end{figure}
 
-
 \section{Designing a quantum algorithm solver based on Grover's search}
+
+\subsection{Register definitions}
 
 The first step is to encode the problem using quantum registers. The size-$n$ Sudoku table has $n^2$ rows and columns. Every cell in it is represented by a quantum register.
 
@@ -149,6 +150,10 @@ In Qiskit, once the qubit registers are added to a circuit, they can be indexed 
 \begin{align*}
 \text{cell}[i][j][k] = \text{cell}[i\cdot{}n^4+j\cdot{}n^2+k], & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j,k<n^2
 \end{align*}
+
+\subsection{Oracle operator}
+
+\subsubsection{Constraint definitions}
 
 I will verify if a solution is correct, using uniqueness constraints. These constraints will all be using the same scheme, which I define as UNIQUE\_ONE($[x_0,\dots,{}x_{n-1}]$) constraint, where $[x_0,\dots,{}x_{n-1}]$ is a list of single-dimensional indexes. If a UNIQUE\_ONE($[x_0,\dots,{}x_{n-1}]$) constraint is applied, the qubits with indexes $[x_0,\dots,{}x_{n-1}]$ must contain exactly one $\ket{1}$.
 
@@ -178,7 +183,7 @@ For every $j$ column and every $k$ one-hot encoded number position, the $k$ numb
     \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}j<n^2}), & \hspace{3mm} \forall{}0\leq{}i,k<n^2
 \end{align*}
 
-\textb{Numbers in each square should be unique}
+\textbf{Numbers in each square should be unique}
 
 In order to create this constraint, the row and column indexes must be taken apart into an inner and outer index:
 
@@ -195,8 +200,67 @@ Then, for every square, indexed by the $(i_{outer}, j_{outer})$ pair and every $
     \text{UNIQUE\_ONE}([(i_{outer}\cdot{}n + i_{inner})\cdot{}n^4 + (j_{outer}\cdot{}n + j_{inner})\cdot{}n^2 + k]_{0\leq{}i_{inner},j_{inner}<n}), \\ \forall{}0\leq{}i_{outer},j_{outer}<n,\forall{}0\leq{}k<n^2
 \end{align*}
 
+\subsubsection{Implementation of the UNIQUE\_ONE constraint}
+
+In order to implement a UNIQUE\_ONE($[x_0,\dots,{}x_{n-1}]$) constraint, we use the WeightedAdder component from Qiskit. This takes $n$ qubits and sums them up into a $\log_{2}(n)$ sized array. We want the sum to be exactly $1$, which means that the output of the sum array should be equal to $\ket{0\dots{}01}$. Adding a $NOT$ gate to the least significant qubit, the output should be $\ket{0\dots{}0}$. This can be tested using a multi-controlled $NOT$, or $M-CNOT$ gate.
+
 \begin{figure}[H]
   \centering
-    \includegraphics[width=0.3\linewidth]{content/assets/03_grovers_algorithm/weighted_adder.png}
-    \caption{WeightedAdder circuit}
+    \includegraphics[width=0.7\linewidth]{content/assets/03_grovers_algorithm/unique_one.png}
+    \caption{Unique one (TODO fehér diagram)}
 \end{figure}
+
+For multiple UNIQUE\_ONE constraints, the results can be aggregated using a final multi-controlled $CNOT$ gate, or using a single, common $M-CNOT$ gate for all of them.
+
+In the end, this final $MCNOT$ operation is applied to a single, $\ket{oracle}$ qubit in the circuit.
+
+\subsection{Grover's framework: The amplitude amplification technique}
+
+Let us denote the $cells[i][j][k]$ qubits with the $\ket{cells}$ qubit vector!
+
+In the beginning, Grover initializes this vector to the uniform distribution:
+
+\begin{align*}
+\ket{s} = \frac{1}{\sqrt{N}}\sum\limits_{x=0}^{N-1}\ket{x}
+\end{align*}
+
+This is done by applying an $n$-dimensional Hadamard-matrix to the $\ket{0\dots{}0}$ vector.
+
+\begin{align*}
+\ket{s} = H^{\otimes{}n}\ket{0}
+\end{align*}
+
+We can see this initial state in the following figure.
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step1.jpg}
+    \caption{Initialization}
+\end{figure}
+
+On the right hand side, the individual amplitudes are represented for all elements in the $\ket{cells}$ vector. This can be seen as an $N$-dimensional vector. Since we are only interested in what is the probability of sampling a correct solution, we can project this $N$-dimensional vector-space into a $2$-dimensional one, where the dimensions correspond to the probability of a solution and a non-solution sampling. The $x$-axis, or $\ket{s'}$ represents non-solutions, while the $y$-axis, or $\ket{w}$ represents the solutions.
+
+In order to create a Grover's oracle from the oracle function defined in the previous section, I initialize the $\ket{oracle}$ qubit to $\ket{-} = \frac{1}{\sqrt{2}}\ket{0} - \frac{1}{\sqrt{2}}\ket{1}$. When the oracle circuit is applied to $\ket{oracle} = \ket{-}$, the phase kickback effect results in a negative amplitude multiplier exactly on the elements in the $\ket{cells}$ vector, which are solutions according to the oracle.
+
+This effect can be seen on these figures:
+
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step2.jpg}
+    \caption{Phase kickback}
+\end{figure}
+
+On the right-hand side, the solutions amplitudes are flipped. Since the solutions constutire the $y$-axis on the left-hand side, this results in a reflection over the $x$-axis.
+
+Finally, another reflection is performed, which reflexts over the average amplitude in the current superposition. For non-solution elements this decreases their overall probability, while the flipped solution elements gain probability.
+\begin{figure}[H]
+  \centering
+    \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step3.jpg}
+    \caption{Reflect over the average amplitude}
+\end{figure}
+
+On the left-hand side this can be represented by a reflextion over the initial (uniform) distribution, the $\ket{s}$ vector.
+
+Together, these two reflections constitute a rotation towards the $\ket{w}$ solution axis with a degree that depends on the size of the search space ($N$) and the number of solutions ($M$). In order to reach the $\ket{w}$ axis as close as possible, the rotation must be performed $\sqrt{\frac{N}{M}}$ times.
+
+In order to recompute the oracle on the new search space, first the old results must be erased from the ancilla (sum) qubits in the system. Since the WeightedAdder operator works internally with $CNOT$ gates, erasing the result can be done by applying the same circuit in reverse order.
