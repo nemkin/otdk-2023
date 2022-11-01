@@ -130,25 +130,25 @@ In this section I first define the Sudoku problem's representation in a binary f
 
 \subsection{Register definitions}
 
-The first step is to encode the problem using quantum registers. The size-$n$ Sudoku table has $n^2$ rows and columns. Every cell in it is represented by a quantum register.
+The first step is to encode the problem using quantum registers. The size-$n$ Sudoku table has $n^2$ rows and columns. Every cell in it is represented by a quantum register:
 
 \begin{align*}
-\text{cell}[i][j] = \ket{0\dots{}010\dots{}0}, & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j<n^2
+\text{cell}[i][j] = \ket{0\dots{}010\dots{}0}, & \hspace{3mm}\forall{}\hspace{1mm}(0\leq{}i,j<n^2).
 \end{align*}
 
-The length (qubits) of the register is $n^2$ and the number in the cell is represented using one-hot encoding.
+The length (qubits) of the register is $n^2$ and the number in the cell is represented using one-hot encoding. One-hot encoding means, that a number between $0$ and $b-1$ is represented by a $b$ bit register, each number corresponding to a single bit being $1$ in the register:
 
 \begin{align*}
 \text{cell}[i][j][k] = \begin{cases}
 \ket{1} & \text{cell}_{(i,j)}\text{'s number is }(k+1) \\
 \ket{0} & \text{otherwise}
-\end{cases}, & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j,k<n^2
+\end{cases}, & \hspace{3mm}\forall{}(\hspace{1mm}0\leq{}i,j,k<n^2).
 \end{align*}
 
 In Qiskit, once the qubit registers are added to a circuit, they can be indexed using a single dimensional index, such as:
 
 \begin{align*}
-\text{cell}[i][j][k] = \text{cell}[i\cdot{}n^4+j\cdot{}n^2+k], & \hspace{3mm}\forall{}\hspace{1mm}0\leq{}i,j,k<n^2
+\text{cell}[i][j][k] = \text{cell}[i\cdot{}n^4+j\cdot{}n^2+k], & \hspace{3mm}\forall{}\hspace{1mm}(0\leq{}i,j,k<n^2).
 \end{align*}
 
 \subsection{Oracle operator}
@@ -180,7 +180,7 @@ For every $i$ row and every $k$ one-hot encoded number position, the $k$ number 
 For every $j$ column and every $k$ one-hot encoded number position, the $k$ number should be present in the $j$th column exactly once, indexed by the $i$ rows:
 
 \begin{align*}
-    \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}j<n^2}), & \hspace{3mm} \forall{}0\leq{}i,k<n^2
+    \text{UNIQUE\_ONE}([i\cdot{}n^4 + j\cdot{}n^2 + k]_{0\leq{}i<n^2}), & \hspace{3mm} \forall{}0\leq{}j,k<n^2
 \end{align*}
 
 \textbf{Numbers in each square should be unique}
@@ -188,8 +188,8 @@ For every $j$ column and every $k$ one-hot encoded number position, the $k$ numb
 In order to create this constraint, the row and column indexes must be taken apart into an inner and outer index:
 
 \begin{align*}
-i = i_{outer}\cdot{}n + i_{inner} \\
-j = j_{outer}\cdot{}n + j_{inner} \\
+i = i_{outer}\cdot{}n + i_{inner},\hspace{3mm}& (0\leq{}i_{outer},i_{inner}<n) \\
+j = j_{outer}\cdot{}n + j_{inner},\hspace{3mm}& (0\leq{}j_{outer},j_{inner}<n) \\
 \end{align*}
 
 This way $i_{outer}$ and $j_{outer}$ index the squares the constraint is applied to, while $i_{inner}$ and $j_{inner}$ index their internal cells.

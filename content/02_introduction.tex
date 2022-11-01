@@ -6,24 +6,24 @@ In this chapter I introduce the concept of Quantum Turing-machines and the so-ca
 
 Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article\cite{feynman_simulating_1982}, where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
 
-The current computational model we use for classical computers is called the Turing-machine. These new types of computers are so different from classical ones that they run based on a completely different set of rules. Following the work of many computer scientists (Benioff, Deutsch, Bernstein and Vazirani), the computational model for Quantum computers was mathematically defined in the late 1980s: the Quantum Turing machine.
+The current computational model we use for classical computers is called the Turing-machine. These new types of computers are so different from classical ones that they run based on a completely different set of rules. Following the work of many computer scientists (Benioff\cite{benioff_models_1998}, Deutsch\cite{deutsch_quantum_1985}, and Bernstein and Vazirani\cite{bernstein_quantum_1993}), the computational model for Quantum computers was mathematically defined in the late 1980s: the Quantum Turing machine.
 
 In the classical world, on the Turing machine, mathematicians and computer scientists have been working on coming up with fast solutions to all kinds of algorithmic problems. Many of these problems have important real-life applications, but nobody has been able to come up with a fast solution to them. A subcategory of these unsolved problems is the ones where at least we are able to verify in a fast manner if a solution is correct, these are called the 'NP' problems. A simple way to use the verifier algorithm to solve a problem is to look at all of the possible solutions (the domain of the problem) and verify every one of them, until we find a correct solution. This runs in $O(N)$ linear time relative to the size of the problem's domain. The question is, can we do something faster? This is one of the famous Millennium Prize Problems set by the Clay Mathematics Institute a hundred years ago, the P versus NP problem. This problem has eluded computer scientists for a century.
 
-In the quantum world, on the Quantum Turing machine, there exists a better method for the classical linear verifier search, which can do it in $O(\sqrt{N})$ time, relative to the size of the problem's domain. This algorithm is called Grover's search. It has also been proven [TODO cite] by Vazirani, that this is asymptotically tight.
+In the quantum world, on the Quantum Turing machine, there exists a better method for the classical linear verifier search, which can do it in $O(\sqrt{N})$ time, relative to the size of the problem's domain. This algorithm is called Grover's search. It has also been proven by Vazirani, that this is asymptotically tight.
 
 \section{Application of quantum algorithms in bioinformatics}
 
-An interesting area for algorithmic research is bioinformatics. Many problems here have significant impact on our everyday lives since discoveries in this area can help us solve many of today’s major global problems, for example, aiding the creation of more effective medical treatments, advancing our understanding of genetic diseases, developing resistant crops to tackle a global food crisis or inventing novel technologies to reduce and revert environmental pollution. I am particularly interested in computer-aided drug design, where problems such as protein folding and molecular docking turn out to be NP-hard ones, which means that despite decades of effort, we have yet to come up with efficient solutions to them using classical computers.
+An interesting area for algorithmic research is bioinformatics. Many problems here have significant impact on our everyday lives since discoveries in this area can help us solve many of today’s major global problems, for example, aiding the creation of more effective medical treatments, advancing our understanding of genetic diseases, developing resistant crops to tackle a global food crisis or inventing novel technologies to reduce and revert environmental pollution. I am particularly interested in computer-aided drug design, where problems such as protein folding\cite{crescenzi_complexity_1998} and molecular docking\cite{a_molecular_2018} turn out to be NP-hard ones, which means that despite decades of effort, we have yet to come up with efficient solutions to them using classical computers.
 
 In the past year I have been researching protein folding and how to implement it on a general-purpose quantum computer. I have ran into a significant problem: I was unable to run any experiments of usable size, mainly due to limitations in memory. Due to quantum parallelism, the memory requirements of running a quantum calculation simulation are super-exponential. In particular, there is one component in Qiskit, which seemed to come back in any form of model I have tried to implement: a quantum gate for taking the sum of $n$ qubits, called the WeightedAdder class. 
 
-This component came up, because a natural way to encode protein structures is by creating a 2D or 3D grid and laying the aminoacid chain down on it:
+This component came to my attention, because a natural way to encode protein structures is by creating a 2D or 3D grid and laying the aminoacid chain down on it\cite{dill_principles_2008}:
 
 \begin{figure}
     \centering
     \includegraphics{content/assets/02_introduction/hp_model.png}
-    \caption{HP model of protein folding}
+    \caption{HP model of protein folding\cite{dill_principles_2008}}
     \label{fig:my_label}
 \end{figure}
 
