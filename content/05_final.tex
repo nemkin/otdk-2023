@@ -1,0 +1,17 @@
+\chapter{Current standing and further}
+
+My goal for the future is to explore quantum solutions to classically NP-hard problems and their connection to Grover's search algorithm. I am interested in computer-aided drug design, particularly the NP-hard problems of protein folding and molecular docking. While researching protein folding, I found a simplified model that is still NP-hard but can be implemented on a gated general-purpose quantum computer. However, I ran into a hard memory limit since the largest computable protein chain contained at most four amino acids, on which the problem is trivial.
+
+I looked into various open-source quantum computational frameworks, notably Qiskit and how I might reduce their memory requirements. These frameworks focus on a different goal: to allow the programming of quantum computers their respective vendors sell, which means that simulation, especially memory-efficient simulation, is not their primary concern.
+
+The primary goal of this framework is to reduce memory-usage of simulation while trading in runtime. For research purposes, it is acceptable to wait for example a few days for a simulation of protein folding runs on a relatively high-end PC, however it is not cost-effective to buy terabytes of memory or rent a memory-optimized virtual machine from the cloud.
+
+In this dissertation, I have developed the mathematical framework for implementing general-purpose software for gated quantum computer simulations. These developments have been:
+
+\begin{itemize}
+    \item The logic of handling the probability amplitudes in the current set of registers and applying operators to a subset of these registers using qubit mapping permutations on their binary indexing sequences.
+    \item The architecture allows individual tricks for memory-efficient operator implementation, such as on-the-fly generation and the $u$ function method.
+    \item The building blocks for Grover's algorithm's implementation, the Hadamard, Grover, Sum and MCnot operators.
+\end{itemize}
+
+My goals for the future with this framework is to finish the implementation of Grover's algorithm by connecting the implemented building blocks and introducing unit tests for the individual components of the software. Since all of these operators rely heavily on custom implementation, it is important that their correctness is verified. In particular, I would like to explore methamorphic testing, in which the operators are tested by verifying if they admit to certain mathematical properties, such as the self-adjointness of the Hamilton-operator.
