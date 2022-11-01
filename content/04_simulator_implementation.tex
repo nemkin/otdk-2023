@@ -14,7 +14,7 @@ Instead of storing the matrices in-memory I will be designing a system where ope
 
 \section{Quantum registers}
 
-The first step in the implementation process is designing the inner workings of the quantum registers. In order to represent an $n$ qubit register, we must store $2^n$ complex numbers, the probability amplitudes of each of the possible 0/1 bit representations.
+The first step in the implementation process is designing the inner workings of the quantum registers. In order to represent an $n$ qubit register, we must store $2^n$ complex numbers, the probability amplitudes of each of the possible 0/1 bit representations, as follows:
 
 \begin{align*}
 \ket{0\dots{}000} \rightarrow & \hspace{2mm} c_0 \\
@@ -22,10 +22,10 @@ The first step in the implementation process is designing the inner workings of 
 \ket{0\dots{}010} \rightarrow & \hspace{2mm} c_2 \\
 \ket{0\dots{}011} \rightarrow & \hspace{2mm} c_3 \\
 \dots{} \\
-\ket{1\dots{}111} \rightarrow & \hspace{2mm} c_{2^n-1}
+\ket{1\dots{}111} \rightarrow & \hspace{2mm} c_{2^n-1},
 \end{align*}
 
-Where $c_0,\dots{},c_{2^n-1}\in{}\mathds{C}$.
+where $c_0,\dots{},c_{2^n-1}\in{}\mathds{C}$.
 
 When multiple registers are present in the system, handling operators that are only applied to some of the registers becomes problematic. Since qubits can be entangled, every single new register added to the system multiplies the amount of storage required for the probability amplitudes.
 
@@ -37,7 +37,7 @@ Let there be $r$ registers in the system:
 \{R_0, \dots{}, R_{r-1}\}
 \end{align*}
 
-and let $n_i$ be number of qubits in register $R_i$, where $(0\leq{}i<r)$.
+and let $n_i$ be number of qubits in register $R_i$, where $0\leq{}i<r$.
 
 The total number of qubits in the system is therefore
 
@@ -48,25 +48,25 @@ The total number of qubits in the system is therefore
 Then, let $U$ be an operation, a unitary (square) matrix, that is applied to $k$ of the registers:
 
 \begin{align*}
-\{R_{r_0},\dots{},R_{r_{k-1}}\},\hspace{3mm} (0\leq{}r_j<r),\hspace{3mm} (0\leq{}j<k),\hspace{3mm} (k\leq{}r).
+\{R_{r_0},\dots{},R_{r_{k-1}}\},\hspace{3mm} 0\leq{}r_j<r,\hspace{3mm} 0\leq{}j<k,\hspace{3mm} k\leq{}r.
 \end{align*}
 
 The number of qubits $U$ must operate on is therefore
 
 \begin{align*}
-    m = \sum\limits_{j=0}^{k-1}l_{r_j}.
+    m = \sum\limits_{j=0}^{k-1}n_{r_j}.
 \end{align*}
 
-which means that the $U$ matrix is of size $(M\times{}M)$, where
+which means that matrix $U$ is of size $(M\times{}M)$, where
 
 \begin{align*}
-M = 2^m = \prod\limits_{j=0}^{k-1} 2^{(l_{r_j})}.
+M = 2^m = \prod\limits_{j=0}^{k-1} 2^{(n_{r_j})}.
 \end{align*}
 
-The complex probability amplitudes for all possible register contents in the system are stored in a single array $C$, of complex numbers. $C$'s size is 
+The complex probability amplitudes for all possible register contents in the system are stored in a single array $C$ of complex numbers. The size of $C$ is 
 
 \begin{align*}
-N = 2^n = \prod\limits_{i=0}^{r-1} 2^{l_i}.
+N = 2^n = \prod\limits_{i=0}^{r-1} 2^{n_i}.
 \end{align*}
 
 and its contents are
@@ -98,7 +98,7 @@ A binary indexing sequence is partitioned by the registers in the following way:
 \ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} = \ket{R_{r-1} | R_{r-2} | \dots{} | R_2 | R_1 | R_0}.
 \end{align*}
 
-Similarly, a single cell of the $U$ matrix can be indexed using 2-dimensional binary indexing sequences. The matrix $U$ is indexed by the following 2 $m$ dimensional qubit sequences:
+Similarly, a single cell of matrix $U$ can be indexed using 2-dimensional binary indexing sequences. Matrix $U$ is indexed by the following two $m$ dimensional qubit sequences:
 
 \begin{align*}
 \ket{a_{m-1},a_{n-2},\dots{},a_2,a_1,a_0}
@@ -128,7 +128,7 @@ and
 B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}.
 \end{align*}
 
-A 2-dimensional binary indexing sequence on the U matrix can also be partitioned by the registers $U$ is applied to, in the following ways:
+A 2-dimensional binary indexing sequence on matrix $U$ can also be partitioned by the registers $U$ is applied to, in the following ways:
 
 \begin{align*}
 \ket{a_{m-1},a_{m-2},\dots{},a_2,a_1,a_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}.
@@ -140,7 +140,7 @@ and
 \ket{b_{m-1},b_{m-2},\dots{},b_2,b_1,b_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}.
 \end{align*}
 
-To implement the application of the $U$ matrix to registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ in the system, the $C$ array must be rearranged, so that $U$ can be applied to continuous subsequences of $C$.
+To implement the application of matrix $U$ to registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ in the system, the $C$ array must be rearranged, so that $U$ can be applied to continuous subsequences of $C$.
 
 This can be done via a bit-mapping on the binary indexing sequences. The qubits corresponding to the registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ are moved to the lower end of the sequence, while the rest of the registers to the upper end.
 
@@ -277,7 +277,7 @@ Then, the 3 qubit operator $U^{8\times{}8}$, which is an $(8\times8)$ matrix can
 
 \section{Quantum operators}
 
-In order to implement Grover's algorithm the following operators are needed: Hadamard, Grover (Diffuser matrix), Sum (WeightedAdder), and Multi-Controlled NOT.
+In order to implement Grover's algorithm the following operators are needed: Hadamard, Grover (diffuser matrix), Sum (WeightedAdder), and Multi-Controlled NOT.
 
 \subsection{Definitions}
 
