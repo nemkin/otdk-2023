@@ -1,6 +1,8 @@
 \chapter{Introduction}
 
-\section{Why are quantum computers interesting?}
+In this chapter I introduce the concept of Quantum Turing-machines and the so-called P versus NP problem, in particular its relations to bioinformatical problems, such as protein folding.
+
+\section{Quantum and classical computers}
 
 Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article\cite{feynman_simulating_1982}, where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
 
@@ -10,7 +12,7 @@ In the classical world, on the Turing machine, mathematicians and computer scien
 
 In the quantum world, on the Quantum Turing machine, there exists a better method for the classical linear verifier search, which can do it in $O(\sqrt{N})$ time, relative to the size of the problem's domain. This algorithm is called Grover's search. It has also been proven [TODO cite] by Vazirani, that this is asymptotically tight.
 
-\section{What is the motivation for this report?}
+\section{Application of quantum algorithms in bioinformatics}
 
 An interesting area for algorithmic research is bioinformatics. Many problems here have significant impact on our everyday lives since discoveries in this area can help us solve many of today’s major global problems, for example, aiding the creation of more effective medical treatments, advancing our understanding of genetic diseases, developing resistant crops to tackle a global food crisis or inventing novel technologies to reduce and revert environmental pollution. I am particularly interested in computer-aided drug design, where problems such as protein folding and molecular docking turn out to be NP-hard ones, which means that despite decades of effort, we have yet to come up with efficient solutions to them using classical computers.
 
@@ -33,8 +35,10 @@ Using these operations, we can create a quantum oracle, that assesses the optima
 
 Unfortunately, while Qiskit itself is open-source, it's architecture (similarly to other quantum computing frameworks) is designed from the core to store the matrices of various operations (such as the WeightedAdder operation) in its memory and retrieve this information during simulation. This means that I am unable to correct this single operation in Qiskit.
 
-\section{What is the scope of this report?}
+\section{Contents of this dissertation}
 
-In order to reduce the memory requirements for any quantum computation simulation, we have to be able to reduce storing large operation matrices in memory whenever we can. This requires a completely different architecture.
+In order to reduce the memory requirements for any quantum computation simulation, I have to be able to reduce storing large operation matrices in memory whenever I can. This requires a completely different architecture.
 
 The scope of this report is designing and implementing this architecture, particularly solving the problem with WeightedAdder. While the original motivation for the focus on this specific component comes from protein folding, bioinformatics is out of scope for this paper. Instead, I will be taking a much simpler problem, a generic version of Sudoku, which also requires the WeightedAdder component and Grover-search to be solved.
+
+The remaining chapters are structured as follows: In Chapter 2 I introduce Grover's search algorithm framework and solve a generalized version of the Sudoku puzzle with it. I iterate over the necessary components from this solution, the particular operators needed for the oracle and the amplitude amplification technique's implementation. In Chapter 3 I lay down the mathematical foundations for a quantum simulator framework's implementation, particularly the solution to applying a quantum operator to a subset of the registers in the system, then I introduce the quantum operators and their implementations in my system. Finally I describe the architectural design patterns used in the system. In Chapter 4 I summarize the results of this paper and lay down my plans for the future.

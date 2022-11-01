@@ -1,10 +1,8 @@
 \chapter{Grover's algorithm}
 
-\section{What is it and why it is so important?}
+Grover's search algorithm\cite{GroverOriginal} is a quantum algorithm framework, that takes a user-defined solution verifier algorithm (the oracle) and turns it into a $\Theta(\sqrt{N})$ solver. This provides a quadratic speedup over the classical brute force equivalent.
 
-[TODO: Cite: https://qiskit.org/textbook/ch-algorithms/grover.html]
-
-Grover's search algorithm is a quantum algorithm framework, that takes a user-defined solution verifier algorithm (the oracle) and turns it into a $\Theta(\sqrt{N})$ solver. This provides a quadratic speedup over the classical brute force equivalent.
+\section{Introduction to Grover's search algorithm framework}
 
 Many sources call this a database search algorithm, since in Grover's original paper it was described as such. However, the 'database' here is an abstract entity, that represents the entire domain of the problem, while the so-called 'marked' elements are the correct solutions in this domain, for which the oracle would return a 'YES' answer. Using the terms 'problem domain' instead of 'database', 'verifier algorithm' insead of 'oracle' and 'solutions' instead of 'marked elements' makes Grover's importance and connection to the P versus NP problem clearer and the details of the algorithm easier to understand.
 
@@ -44,7 +42,7 @@ One of the most important property of quantum registers is that they can even re
 
 The simplest forms of quantum entanglement are Bell states, which can occur between two qubits. In one of these Bell states, the probability distribution of our 2 qubit quantum registers is "$00$" with $50\%$ probability and "$11$" with $50\%$. Reading the contents of just the first qubit will result in a $50\%$ chance of reading a $0$ and a $50\%$ chance of reading a $1$. However, once we know the result from the first qubit, we can be $100\%$ sure, that when we sample the second qubit, we will get the same number as a result from it.
 
-\section{The Task: Generalization of the Sudoku puzzle}
+\section{Showcasing the algorithm on a simple task}
 
 In the original Sudoku puzzle, we have a $(3^2\cdot{}3^2)$ table, that must be filled with numbers between $1$ and $9$. A correct solution to a puzzle is where each row, column and distinct $(3\cdot{}3)$ square has unique numbers.
 
@@ -126,7 +124,9 @@ And an example for $n=4$ is the following:
   \caption{Sudoku puzzle $(n=4)$}
 \end{figure}
 
-\section{Designing a quantum algorithm solver based on Grover's search}
+\section{Designing a quantum solver for the Sudoku puzzle}
+
+In this section I first define the Sudoku problem's representation in a binary form, then design the verifier algorithm (quantum oracle) for the puzzle, finally I go over the remaining parts of Grover's framework and the amplitude amplification technique it uses.
 
 \subsection{Register definitions}
 
@@ -216,6 +216,8 @@ In the end, this final $MCNOT$ operation is applied to a single, $\ket{oracle}$ 
 
 \subsection{Grover's framework: The amplitude amplification technique}
 
+This chapter is based on the chapter on Grover's algorithm from the Qiskit Texbook\cite{GroverQiskitTextbook}.
+
 Let us denote the $cells[i][j][k]$ qubits with the $\ket{cells}$ qubit vector!
 
 In the beginning, Grover initializes this vector to the uniform distribution:
@@ -259,8 +261,14 @@ Finally, another reflection is performed, which reflexts over the average amplit
     \caption{Reflect over the average amplitude}
 \end{figure}
 
-On the left-hand side this can be represented by a reflextion over the initial (uniform) distribution, the $\ket{s}$ vector.
+On the left-hand side this can be represented by a reflextion over the initial (uniform) distribution, the $\ket{s}$ vector. This operation is called the diffuser operator, which is implemented by a Grover matrix.
 
 Together, these two reflections constitute a rotation towards the $\ket{w}$ solution axis with a degree that depends on the size of the search space ($N$) and the number of solutions ($M$). In order to reach the $\ket{w}$ axis as close as possible, the rotation must be performed $\sqrt{\frac{N}{M}}$ times.
 
 In order to recompute the oracle on the new search space, first the old results must be erased from the ancilla (sum) qubits in the system. Since the WeightedAdder operator works internally with $CNOT$ gates, erasing the result can be done by applying the same circuit in reverse order.
+
+\section{The tools needed to implement Grover's algorithm}
+
+In this capter I have introduced Grover's algorithm and how to use it to solve a generalized version of the Sudoku puzzle.
+
+In order to use this framework, 4 operators must be implemented in the system: the Hadamard (for the phase-kickback), the Grover (the diffuser operator), the Sum (WeightedAdder) and the Multi-controlled NOT gate (for the oracle bit).
