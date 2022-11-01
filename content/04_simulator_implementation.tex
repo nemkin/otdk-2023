@@ -367,19 +367,19 @@ Similarly to \textbf{Sum}, a Multi-controlled NOT operator is defined using an $
 
 \section{Implementation and design patterns}
 
+In the UML diagram below, we can see the part of the system that deals with these memory-efficient operators.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{content/assets/04_simulator_implementation/uml.png}
+    \caption{Strategy and Visitor pattern}
+\end{figure}
+
 The goal of this framework is to allow the user to define quantum operators in a memory-efficient way. There are two types of operators: the ones that are columnwise generated on-the-fly and the $u$ function operators, directly interacting with the binary indexing sequences of the registers.
 
 The code for register handling, the \textbf{BISM} operator and the permutation of the probability amplitudes is common amongst all operators. When these operators are being used, they must be callable from the same interface, to ensure that they are interchangeable and can be inherited from.
 
 In order to achieve this, I have implemented the Strategy design pattern. The intent of this pattern, according to the Design Patterns book\cite{DesignPatterns}, is to define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it. In this pattern, a common interface is defined for all operators, with the implementation dependent on the specific operator. This common interface will later allow me to pontentially generate circuit diagrams for an implemented quantum algorithm.
-
-In the UML diagram below, we can see the part of the system that deals with these memory-efficient operators.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\linewidth]{content/assets/04_simulator_implementation/uml.png}
-    \caption{Strategy and Visitor pattern}
-\end{figure}
 
 The \texttt{QOp} class is the base class of all of the others. The \texttt{Hadamard}, \texttt{Grover}, \texttt{Sum} and \texttt{Mcnot} classes all inherit from it. In particular, the \texttt{Hadamard} and \texttt{Grover} classes only redefine the \texttt{row} and \texttt{column} methods. The generic implementation of the apply method in \texttt{QOp} then uses these methods to apply the operator on the QRegisters.
 
