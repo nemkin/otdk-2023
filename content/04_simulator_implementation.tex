@@ -279,9 +279,7 @@ Then, the 3 qubit operator $U^{8\times{}8}$, which is an $(8\times8)$ matrix can
 
 In order to implement Grover's algorithm the following operators are needed: Hadamard, Grover (diffuser matrix), Sum (WeightedAdder), and Multi-Controlled NOT.
 
-\subsection{Definitions}
-
-\subsubsection{Hadamard}
+\subsection{Hadamard}
 
 The Hadamard matrix is defined as follows. First, the $(2\times{}2)$ H matrix is the following:
 
@@ -305,7 +303,7 @@ H[i][j] = \frac{1}{\sqrt{2^n}}\cdot{}(-1)^{\text{\textbf{COUNT\_BITS}}(i_{\text{
 
 This equation is directly implemented and a single column of $H$ is generated on-the-fly when $H$ is applied, using equation (\ref{RowGenEq}).
 
-\subsubsection{Grover}
+\subsection{Grover}
 
 The Grover matrix is the diffusion operator from Grover's algorithm. It is defined using the $\mathbf{H}^{\otimes{}n}$ matrix, as follows.
 
@@ -335,7 +333,7 @@ If $N = 2^n$, then $\mathbf{G}$ can be represented as follows:
 
 It is straightforward to implement $G$, since the the $j$th column is $\frac{2}{N}$, except for the $j$th cell, where it is $\frac{2}{N}-1$. This matrix is also generated on-the-fly, column-by-column, using equation (\ref{RowGenEq}).
 
-\subsubsection{Sum}
+\subsection{Sum}
 
 The sum operator is one, that can be represented directly using equation (\ref{NoGenEq}), by defining the
 
@@ -359,7 +357,7 @@ Then, $u$ is defined as
     u: \ket{0,\dots{},0,b_{s-1}\dots{},b_0} \rightarrow \ket{\text{\textbf{COUNT\_BITS}}(b_{s-1}\dots{},b_0),b_{s-1}\dots{},b_0}.
 \end{align*}
 
-\subsubsection{Multi-controlled NOT}
+\subsection{Multi-controlled NOT}
 
 Similarly to \textbf{Sum}, a Multi-controlled NOT operator is defined using an $u$ function, which applies the $NOT$ operator to its most significant bit, when any of the other bits are set.
 
@@ -373,7 +371,7 @@ The goal of this framework is to allow the user to define quantum operators in a
 
 The code for register handling, the \textbf{BISM} operator and the permutation of the probability amplitudes is common amongst all operators. When these operators are being used, they must be callable from the same interface, to ensure that they are interchangeable and can be inherited from.
 
-In order to achieve this, I have implemented the Strategy design pattern. The intent of this pattern, according to the Design Patters\cite{DesignPatterns} book is to define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it. In this pattern, a common interface is defined for all operators, with the implementation dependent on the specific operator. This common interface will later allow me to pontentially generate circuit diagrams for an implemented quantum algorithm.
+In order to achieve this, I have implemented the Strategy design pattern. The intent of this pattern, according to the Design Patterns book\cite{DesignPatterns}, is to define a family of algorithms, encapsulate each one, and make them interchangeable. Strategy lets the algorithm vary independently from clients that use it. In this pattern, a common interface is defined for all operators, with the implementation dependent on the specific operator. This common interface will later allow me to pontentially generate circuit diagrams for an implemented quantum algorithm.
 
 In the UML diagram below, we can see the part of the system that deals with these memory-efficient operators.
 
@@ -389,4 +387,4 @@ The \texttt{get\_bit\_mask\_mapping} and \texttt{get\_qubit\_mapping} methods de
 
 The \texttt{Sum} and \texttt{Mcnot} required me to implement a form of inversion-of-control. In the first iteration, a third class (an \texttt{Orchestrator}) received both the registers and the operator it should apply to them, iteratively generated the necessary rows from the operator and applied them onto the registers. This was poblematic, because this type of control flow made it difficult to implement the \texttt{Sum} and \texttt{Mcnot} operators, since they calculate their result without relying on an explicit representation row format.
 
-The knowledge of how an operator should be applied to the registers should be given to the operator itself, since the framework relies on clever, operator-specific memory-efficient implementations to function. This is exactly what the Visitor pattern is used for. According to the Design Patterns\cite{DesignPatterns} book we can \textit{``Use the Visitor pattern when many distinct and unrelated operations need to be performed on objects in an object structure, and [we] want to avoid "polluting" their classes with these operations. Visitor lets [us] keep related operations together by defining them in one class. When the object structure is shared by many applications, use Visitor to put operations in just those applications that need them.''}
+The knowledge of how an operator should be applied to the registers should be given to the operator itself, since the framework relies on clever, operator-specific memory-efficient implementations to function. This is exactly what the Visitor pattern is used for. According to the Design Patterns book\cite{DesignPatterns} we can \textit{``Use the Visitor pattern when many distinct and unrelated operations need to be performed on objects in an object structure, and [we] want to avoid "polluting" their classes with these operations. Visitor lets [us] keep related operations together by defining them in one class. When the object structure is shared by many applications, use Visitor to put operations in just those applications that need them.''}
