@@ -13,7 +13,7 @@ Grover doesn't need to know the structure of the original problem, the relations
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{content/assets/03_grovers_algorithm/grover_uniform.jpg}
-    \caption{Grover starts out with the uniform distribution}
+    \caption{Grover starts out with the uniform distribution\cite{GroverQiskitTextbook}}
 \end{figure}
 
 Then, it uses the verifier algorithm in a process to manipulate their probabilities until the correct entities' probabilities are very high, while the incorrect entities' probabilities are very low. This process is called amplitude amplification.
@@ -21,7 +21,7 @@ Then, it uses the verifier algorithm in a process to manipulate their probabilit
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{content/assets/03_grovers_algorithm/grover_final.jpg}
-    \caption{Grover amplifies the amplitude(s) of the correct solution(s)}
+    \caption{Grover amplifies the amplitude(s) of the correct solution(s)\cite{GroverQiskitTextbook}}
 \end{figure}
 
 Finally, it samples from this probability distribution, which results in a correct solution entity with a high chance.
@@ -239,7 +239,7 @@ We can see this initial state in the following figure.
 \begin{figure}[H]
   \centering
     \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step1.jpg}
-    \caption{Initialization}
+    \caption{Initialization\cite{GroverQiskitTextbook}}
 \end{figure}
 
 On the right hand side, the individual amplitudes are represented for all elements in the $\ket{cells}$ vector. This can be seen as an $N$-dimensional vector. Since we are only interested in what is the probability of sampling a correct solution, we can project this $N$-dimensional vector-space into a $2$-dimensional one, where the dimensions correspond to the probability of a solution and a non-solution sampling. The $x$-axis, or $\ket{s'}$ represents non-solutions, while the $y$-axis, or $\ket{w}$ represents the solutions.
@@ -251,7 +251,7 @@ This effect can be seen on these figures:
 \begin{figure}[H]
   \centering
     \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step2.jpg}
-    \caption{Phase kickback}
+    \caption{Phase kickback\cite{GroverQiskitTextbook}}
 \end{figure}
 
 On the right-hand side, the solutions amplitudes are flipped. Since the solutions constutire the $y$-axis on the left-hand side, this results in a reflection over the $x$-axis.
@@ -260,7 +260,7 @@ Finally, another reflection is performed, which reflexts over the average amplit
 \begin{figure}[H]
   \centering
     \includegraphics[width=\linewidth]{content/assets/03_grovers_algorithm/grover_step3.jpg}
-    \caption{Reflect over the average amplitude}
+    \caption{Reflect over the average amplitude\cite{GroverQiskitTextbook}}
 \end{figure}
 
 On the left-hand side this can be represented by a reflextion over the initial (uniform) distribution, the $\ket{s}$ vector. This operation is called the diffuser operator, which is implemented by a Grover matrix.
