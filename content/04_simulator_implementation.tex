@@ -381,7 +381,6 @@ In the UML diagram below, we can see the part of the system that deals with thes
     \centering
     \includegraphics[width=0.7\linewidth]{content/assets/04_simulator_implementation/uml.png}
     \caption{Strategy and Visitor pattern}
-    \label{fig:my_label}
 \end{figure}
 
 The \texttt{QOp} class is the base class of all of the others. The \texttt{Hadamard}, \texttt{Grover}, \texttt{Sum} and \texttt{Mcnot} classes all inherit from it. In particular, the \texttt{Hadamard} and \texttt{Grover} classes only redefine the \texttt{row} and \texttt{column} methods. The generic implementation of the apply method in \texttt{QOp} then uses these methods to apply the operator on the QRegisters.

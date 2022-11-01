@@ -1,6 +1,6 @@
 \chapter{Grover's algorithm}
 
-Grover's search algorithm\cite{GroverOriginal} is a quantum algorithm framework, that takes a user-defined solution verifier algorithm (the oracle) and turns it into a $\Theta(\sqrt{N})$ solver. This provides a quadratic speedup over the classical brute force equivalent.
+Grover's search algorithm\cite{GroverOriginal} is a quantum algorithm framework, that takes a user-defined solution verifier algorithm (the oracle) and turns it into a $\Theta(\sqrt{N})$\cite{bennett_strengths_1997} solver. This provides a quadratic speedup over the classical brute force equivalent.
 
 \section{Introduction to Grover's search algorithm framework}
 
@@ -14,7 +14,6 @@ Grover doesn't need to know the structure of the original problem, the relations
     \centering
     \includegraphics[width=0.5\linewidth]{content/assets/03_grovers_algorithm/grover_uniform.jpg}
     \caption{Grover starts out with the uniform distribution}
-    \label{fig:grover_uniform}
 \end{figure}
 
 Then, it uses the verifier algorithm in a process to manipulate their probabilities until the correct entities' probabilities are very high, while the incorrect entities' probabilities are very low. This process is called amplitude amplification.
@@ -23,7 +22,6 @@ Then, it uses the verifier algorithm in a process to manipulate their probabilit
     \centering
     \includegraphics[width=0.5\linewidth]{content/assets/03_grovers_algorithm/grover_final.jpg}
     \caption{Grover amplifies the amplitude(s) of the correct solution(s)}
-    \label{fig:grover_uniform}
 \end{figure}
 
 Finally, it samples from this probability distribution, which results in a correct solution entity with a high chance.
