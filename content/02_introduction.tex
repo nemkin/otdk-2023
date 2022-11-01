@@ -2,7 +2,7 @@
 
 \section{Why are quantum computers interesting?}
 
-Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article (https://link.springer.com/article/10.1007/BF02650179), where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
+Originally the idea of a quantum computer was suggested by Richard Feynman in a 1982 article\cite{feynman_simulating_1982}, where he explains that currently existing classical computers are ill-equipped to deal with the complexity of the calculations required to simulate quantum physics. His suggestion was to replace the current hardware standard with one, which works based on quantum physical phenomena, thus giving it the capability to simulate the very thing it is based on.
 
 The current computational model we use for classical computers is called the Turing-machine. These new types of computers are so different from classical ones that they run based on a completely different set of rules. Following the work of many computer scientists (Benioff, Deutsch, Bernstein and Vazirani), the computational model for Quantum computers was mathematically defined in the late 1980s: the Quantum Turing machine.
 
@@ -16,19 +16,16 @@ An interesting area for algorithmic research is bioinformatics. Many problems he
 
 In the past year I have been researching protein folding and how to implement it on a general-purpose quantum computer. I have ran into a significant problem: I was unable to run any experiments of usable size, mainly due to limitations in memory. Due to quantum parallelism, the memory requirements of running a quantum calculation simulation are super-exponential. In particular, there is one component in Qiskit, which seemed to come back in any form of model I have tried to implement: a quantum gate for taking the sum of $n$ qubits, called the WeightedAdder class. 
 
-[TODO: Kép a weighted adder class kapujáról qiskitből]
+This component came up, because a natural way to encode protein structures is by creating a 2D or 3D grid and laying the aminoacid chain down on it:
 
-This component came up, because a natural way to encode protein structures is by creating a 3D grid and laying the aminoacid chain down on it:
+\begin{figure}
+    \centering
+    \includegraphics{content/assets/02_introduction/hp_model.png}
+    \caption{HP model of protein folding}
+    \label{fig:my_label}
+\end{figure}
 
-[TODO: Valami kép, ezt nem kéne magyarázni sokat.]
-
-From a single vertex in a 3D grid, we can step in $6$ directions: up, down, left, right, inwards and outwards. We can encode these naturally, using one-hot encoding, by introducing $6$ bits of information.
-
-[TODO: kép a directionökről]
-
-If we assume that the chain starts in the origin, then we can encode a chain shape by giving the directions of the $(n-1)$ steps it takes.
-
-[TODO: kép...]
+From a single vertex in a 3D grid, we can step in $4$ or $6$ directions: up, down, left, right and inwards and outwards in the 3D case. We can encode these naturally, using one-hot encoding, by introducing $6$ bits of information. If we assume that the chain starts in the origin, then we can encode a chain shape by giving the directions of the $(n-1)$ steps it takes.
 
 A chain like this is viable, when it doesn't cross over itself. A chain's optimality is assessed by counting how many pairs of various aminoacids are neighbouring each other. To answer both of these questions, we must be able to calculate relative distances between any two points of the chain. Using the directinal one-hot encoding model, these questions can be answered by taking the sum of some qubits.
 
