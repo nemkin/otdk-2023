@@ -104,11 +104,12 @@ Then, the 3 qubit operator $U^{8\times{}8}$, which is an $(8\times8)$ matrix can
 
 \subsection{General solution}
 
-Let there be $r$ registers in the system, 
+Let there be $r$ registers in the system: 
 
 \begin{align*}
 \{R_0, \dots{}, R_{r-1}\}
 \end{align*}
+
 and let $n_i$ be number of qubits in register $R_i$, where $(0\leq{}i<r)$.
 
 The total number of qubits in the system is therefore
@@ -135,46 +136,81 @@ which means that the $U$ matrix is of size $(M\times{}M)$, where
 M = 2^m = \prod\limits_{j=0}^{k-1} 2^{(l_{r_j})}.
 \end{align*}
 
-The probability amplitudes for all possible register contents in the system are stored in a single array of complex numbers, of size 
+The complex probability amplitudes for all possible register contents in the system are stored in a single array $C$, of complex numbers. $C$'s size is 
 
 \begin{align*}
 N = 2^n = \prod\limits_{i=0}^{r-1} 2^{l_i}.
 \end{align*}
 
-Let us introduce binary indexing sequences on the register contents as
+and its contents are
+
+\begin{align*}
+C = [C[0],\dots{},C[N-1]] \in{} \mathds{C}^N
+\end{align*}
+
+Let us introduce binary indexing sequences on $C$. A sequence of qubits
 
 \begin{align*}
 \ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0},
 \end{align*}
 
-where a binary index sequence corresponds to a single complex number representing the probability amplitude of that qubit arrangement
+is a binary indexing sequence on $C$ and it corresponds to
 
 \begin{align*}
-\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} \rightarrow c_{B}\in{}\mathds{C}
+C[\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0}] = C[B],
 \end{align*}
 
-where $B$ is the number represented by 
+where
+\begin{align*}
+B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}.
+\end{align*}
+
+A binary indexing sequence is partitioned by the registers in the following way:
 
 \begin{align*}
-B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}
+\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} = \ket{R_{r-1} | R_{r-2} | \dots{} | R_2 | R_1 | R_0}.
+\end{align*}
+
+Similarly, a single cell of the $U$ matrix can be indexed using 2-dimensional binary indexing sequences. The matrix $U$ is indexed by the following 2 $m$ dimensional qubit sequences:
+
+\begin{align*}
+\ket{a_{m-1},a_{n-2},\dots{},a_2,a_1,a_0}
 \end{align*}
 
 and
 
 \begin{align*}
-0\leq{}B<N. 
+\ket{b_{m-1},b_{n-2},\dots{},b_2,b_1,b_0}.
 \end{align*}
 
-The registers in the system partition these binary indexes the following way
+and it corresponds to
 
 \begin{align*}
-\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0} = \ket{R_{r-1} \hspace{1mm}|\hspace{1mm} R_{r-2}; \dots{}; R_2; R_1; R_0}.
+U[\ket{a_{m-1},a_{n-2},\dots{},a_2,a_1,a_0}][\ket{b_{m-1},b_{n-2},\dots{},b_2,b_1,b_0}] = U[A][B],
 \end{align*}
 
-The program stores the $\{c_0,\dots{},c_{N-1}\}$ set of complex probability amplitudes in a continuous array $C$, where
+where
 
 \begin{align*}
-C = [c_0,\dots{},c_{N-1}]
+A = \sum\limits_{i=0}^{n-1}a_i\cdot{}2^{i}
+\end{align*}
+
+and
+
+\begin{align*}
+B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}.
+\end{align*}
+
+A 2-dimensional binary indexing sequence on the U matrix can also be partitioned by the registers $U$ is applied to, in the following ways:
+
+\begin{align*}
+\ket{a_{m-1},a_{m-2},\dots{},a_2,a_1,a_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}.
+\end{align*}
+
+and
+
+\begin{align*}
+\ket{b_{m-1},b_{m-2},\dots{},b_2,b_1,b_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}.
 \end{align*}
 
 To implement the application of the $U$ matrix to registers $\{R_{r_0},\dots{},R_{r_{k-1}}\}$ in the system, the $C$ array must be rearranged, so that $U$ can be applied to continuous subsequences of $C$.
@@ -184,13 +220,39 @@ This can be done via a bit-mapping on the binary indexing sequences. The qubits 
 Let us index the registers $U$ is not applied to with $\{s_0, \dots{}, s_{n-k-1}\}$, so that
 
 \begin{align*}
-\{0, \dots{}, n-1\} = \{r_0, \dots{}, r_{k-1}\} \dot{\cup} \{s_0, \dots{}, s_{n-k-1}\} 
+\{0, \dots{}, n-1\} = \{r_0, \dots{}, r_{k-1}\} \dot{\cup} \{s_0, \dots{}, s_{n-k-1}\}. 
 \end{align*}
 
-Then, the binary index sequence mapping is
+Then, the binary index sequence mapping (BISM) is defined as
 
 \begin{align*}
-\ket{R_{r-1}, R_{r-2}, \dots{}, R_2, R_1, R_0} \rightarrow \ket{R_{s_{r-k-1}}, \dots{}, R_{s_0} | R_{r_{k-1}}, \dots{}, R_{r_0} }
+\text{\textbf{BISM}}: \ket{R_{r-1} | R_{r-2} | \dots{} | R_2 | R_1 | R_0} \rightarrow \ket{R_{s_{r-k-1}} | \dots{} | R_{s_0} \mathbf{|} R_{r_{k-1}} | \dots{} | R_{r_0} }.
+\end{align*}
+
+The \textbf{BISM} function can be used to define the permutation on the $C$ array, by mapping
+
+\begin{align*}
+C'[\text{\textbf{BISM}}(B)] = C[B], \hspace{3mm}(0\leq{}B<N).
+\end{align*}
+
+The $C'$ array's binary indexing sequences can now be partitioned into an upper and lower region,
+
+\begin{align*}
+\ket{b'_{n-1},\dots{},b'_{m}|b'_{m-1},\dots{}b'_0},
+\end{align*}
+
+where the lower region's indexing sequences correspond 1-to-1 to the $U$ unitary matrix operation's second dimension.
+
+Now, we can apply $U$ to $C'$. Let the resulting register contents be $R'$, where
+
+\begin{align*}
+R'[\ket{b'_{n-1},\dots{},b'_{k}|a'_{k-1},\dots{}a'_0}] = \sum\limits_{\substack{0\leq{}i<m \\ \forall{}b_i\in{}\{0,1\}}}U[\ket{a'_{m-1},\dots{},a'_0}][\ket{b'_{m-1},\dots{},b'_0}] \cdot{} C'[\ket{b'_{m-1},\dots{},b'_0}].
+\end{align*}
+
+Finally, the $R'$ array must be inverse-permuted back to the original order of the indexing qubits
+
+\begin{align*}
+R[B] = R'[\text{\textbf{BISM}}(B)], \hspace{3mm}(0\leq{}B<N).
 \end{align*}
 
 \section{Quantum operators}
