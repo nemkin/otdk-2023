@@ -374,3 +374,10 @@ The goal of this framework is to allow the user to define quantum operators in a
 The code for register handling, the \textbf{BISM} operator and the permutation of the probability amplitudes is common amongst all operators. When these operators are being used, they must be callable from the same interface, to ensure that they are interchangeable and can be inherited from.
 
 In order to achieve this, I have implemented the Strategy design pattern. In this pattern, a common interface is defined for all operators, with the implementation dependent on the specific operator.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\linewidth]{content/assets/04_simulator_implementation/uml.svg}
+    \caption{UML diagram}
+    \label{fig:my_label}
+\end{figure}
