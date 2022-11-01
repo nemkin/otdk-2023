@@ -371,6 +371,6 @@ Similarly to \textbf{Sum}, a Multi-controlled NOT operator is defined using an $
 
 The goal of this framework is to allow the user to define quantum operators in a memory-efficient way. There are two types of operators: the ones that are columnwise generated on-the-fly and the $u$ function operators, directly interacting with the binary indexing sequences of the registers.
 
-The code for register handling, the $BISM$ operator and the permutation of the probability amplitudes is common amongst all operators. When these operators are being used, they must be callable from the same interface, to ensure that they are interchangeable and can be inherited from.
+The code for register handling, the \textbf{BISM} operator and the permutation of the probability amplitudes is common amongst all operators. When these operators are being used, they must be callable from the same interface, to ensure that they are interchangeable and can be inherited from.
 
 In order to achieve this, I have implemented the Strategy design pattern. In this pattern, a common interface is defined for all operators, with the implementation dependent on the specific operator.
