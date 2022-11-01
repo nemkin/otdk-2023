@@ -225,13 +225,13 @@ Let us denote the $cells[i][j][k]$ qubits with the $\ket{cells}$ qubit vector!
 In the beginning, Grover initializes this vector to the uniform distribution:
 
 \begin{align*}
-\ket{s} = \frac{1}{\sqrt{N}}\sum\limits_{x=0}^{N-1}\ket{x}
+\ket{s} = \frac{1}{\sqrt{N}}\sum\limits_{x=0}^{N-1}\ket{x}.
 \end{align*}
 
-This is done by applying an $n$-dimensional Hadamard-matrix to the $\ket{0\dots{}0}$ vector.
+This is done by applying an $n$-dimensional Hadamard-matrix to the $\ket{0\dots{}0}$ vector:
 
 \begin{align*}
-\ket{s} = H^{\otimes{}n}\ket{0}
+\ket{s} = H^{\otimes{}n}\ket{0}.
 \end{align*}
 
 We can see this initial state in the following figure.

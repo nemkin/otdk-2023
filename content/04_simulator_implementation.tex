@@ -31,7 +31,7 @@ When multiple registers are present in the system, handling operators that are o
 
 \subsection{General solution}
 
-Let there be $r$ registers in the system: 
+Let there be $r$ registers in the system, 
 
 \begin{align*}
 \{R_0, \dots{}, R_{r-1}\}
@@ -66,19 +66,19 @@ M = 2^m = \prod\limits_{j=0}^{k-1} 2^{(n_{r_j})}.
 The complex probability amplitudes for all possible register contents in the system are stored in a single array $C$ of complex numbers. The size of $C$ is 
 
 \begin{align*}
-N = 2^n = \prod\limits_{i=0}^{r-1} 2^{n_i}.
+N = 2^n = \prod\limits_{i=0}^{r-1} 2^{n_i}
 \end{align*}
 
 and its contents are
 
 \begin{align*}
-C = [C[0],\dots{},C[N-1]] \in{} \mathds{C}^N
+C = [C[0],\dots{},C[N-1]] \in{} \mathds{C}^N.
 \end{align*}
 
 Let us introduce binary indexing sequences on $C$. A sequence of qubits
 
 \begin{align*}
-\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0},
+\ket{b_{n-1},b_{n-2},\dots{},b_2,b_1,b_0}
 \end{align*}
 
 is a binary indexing sequence on $C$ and it corresponds to
@@ -107,7 +107,7 @@ Similarly, a single cell of matrix $U$ can be indexed using 2-dimensional binary
 and
 
 \begin{align*}
-\ket{b_{m-1},b_{n-2},\dots{},b_2,b_1,b_0}.
+\ket{b_{m-1},b_{n-2},\dots{},b_2,b_1,b_0}
 \end{align*}
 
 and it corresponds to
@@ -131,7 +131,7 @@ B = \sum\limits_{i=0}^{n-1}b_i\cdot{}2^{i}.
 A 2-dimensional binary indexing sequence on matrix $U$ can also be partitioned by the registers $U$ is applied to, in the following ways:
 
 \begin{align*}
-\ket{a_{m-1},a_{m-2},\dots{},a_2,a_1,a_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}.
+\ket{a_{m-1},a_{m-2},\dots{},a_2,a_1,a_0} = \ket{R_{r_{k-1}} | R_{r_{k-2}} | \dots{} | R_{r_2} | R_{r_1} | R_{r_0}}
 \end{align*}
 
 and
@@ -159,10 +159,10 @@ Then, the binary index sequence mapping (BISM) is defined as
 The \textbf{BISM} function can be used to define the permutation on the $C$ array, by mapping
 
 \begin{align*}
-C'[\text{\textbf{BISM}}(B)] = C[B], \hspace{3mm}(0\leq{}B<N).
+C'[\text{\textbf{BISM}}(B)] = C[B], \hspace{3mm}0\leq{}B<N.
 \end{align*}
 
-The $C'$ array's binary indexing sequences can now be partitioned into an upper and lower region,
+The $C'$ array's binary indexing sequences can now be partitioned into an upper and lower region, such as
 
 \begin{align*}
 \ket{b'_{n-1},\dots{},b'_{m}|b'_{m-1},\dots{}b'_0},
@@ -199,7 +199,7 @@ These equations are the basis of the memory-efficiency of this framework.
 Finally, the $R'$ array must be inverse-permuted back to the original order of the indexing qubits
 
 \begin{align*}
-R[B] = R'[\text{\textbf{BISM}}(B)], \hspace{3mm}(0\leq{}B<N).
+R[B] = R'[\text{\textbf{BISM}}(B)], \hspace{3mm}0\leq{}B<N.
 \end{align*}
 
 \subsection{Presenting the solution on an example}
@@ -224,7 +224,7 @@ The probability amplitudes stored are the following:
 \ket{01,1,0} \rightarrow & \hspace{2mm} c_{6} &
 \ket{11,1,0} \rightarrow & \hspace{2mm} c_{14} \\
 \ket{01,1,1} \rightarrow & \hspace{2mm} c_{7} &
-\ket{11,1,1} \rightarrow & \hspace{2mm} c_{15} \\
+\ket{11,1,1} \rightarrow & \hspace{2mm} c_{15}. \\
 \end{align*}
 
 The simplest solution would be to apply a "no-operation" operator, or the identity matrix to the remaining registers, however this will not scale well memory-wise with the number of registers increasing in the system.
@@ -234,7 +234,7 @@ Instead I implemented the register handling in a way that allowed me to skip sto
 For example, if we apply a $3$ qubit operator to the registers $R_0$ and $R_2$, then the previous table is rearranged so that the bits corresponding to $R_0$ and $R_2$ are pushed towards the least significant bit in the following way:
 
 \begin{align*}
-\ket{R_{2,1},R_{2,1};R_{1,0};R_{0,0}} \rightarrow \ket{R_{1,0};\color{red}R_{2,0},R_{2,1};R_{0,0}\color{black}}
+\ket{R_{2,1},R_{2,1};R_{1,0};R_{0,0}} \rightarrow \ket{R_{1,0};\color{red}R_{2,0},R_{2,1};R_{0,0}\color{black}}.
 \end{align*}
 
 
@@ -255,24 +255,24 @@ For example, if we apply a $3$ qubit operator to the registers $R_0$ and $R_2$, 
 \ket{01,1,0} \rightarrow & \ket{1,\color{red}01,0\color{black}}' \rightarrow \color{red}c'_{10}\color{black}\rightarrow c_{6} &
 \ket{11,1,0} \rightarrow & \ket{1,\color{red}11,0\color{black}}' \rightarrow \color{red}c'_{14}\color{black}\rightarrow c_{14} \\
 \ket{01,1,1} \rightarrow & \ket{1,\color{red}01,1\color{black}}' \rightarrow \color{red}c'_{11}\color{black}\rightarrow c_{7} &
-\ket{11,1,1} \rightarrow & \ket{1,\color{red}11,1\color{black}}' \rightarrow \color{red}c'_{15}\color{black}\rightarrow c_{15} \\
+\ket{11,1,1} \rightarrow & \ket{1,\color{red}11,1\color{black}}' \rightarrow \color{red}c'_{15}\color{black}\rightarrow c_{15}. \\
 \end{align*}
 
 Then, the 3 qubit operator $U^{8\times{}8}$, which is an $(8\times8)$ matrix can be applied iteratively in the following way:
 
 \begin{enumerate}
-    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{0}$\\
-    $[c_0,c_1,c_4,c_5,c_8,c_9,c_{12},c_{13}] = [\color{red}c'_0,c'_1,c'_2,c'_3,c'_4,c'_5,c'_6,c'_7\color{black}]$\\
+    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{0}$:\\
+    $[c_0,c_1,c_4,c_5,c_8,c_9,c_{12},c_{13}] = [\color{red}c'_0,c'_1,c'_2,c'_3,c'_4,c'_5,c'_6,c'_7\color{black}]$.\\
     The resulting vector is the first half of the complete result:\\
-    $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7\color{black}]$
-    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{1}$\\
-    $[c_2,c_3,c_6,c_7,c_{10},c_{11},c_{14},c_{15}] = [\color{red}c'_8,c'_9,c'_{10},c'_{11},c'_{12},c'_{13},c'_{14},c'_{15}\color{black}]$\\
+    $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7\color{black}].$
+    \item Apply $U^{8\times{}8}$ to the probability amplitudes corresponding to $R_{1,0} = \ket{1}:$\\
+    $[c_2,c_3,c_6,c_7,c_{10},c_{11},c_{14},c_{15}] = [\color{red}c'_8,c'_9,c'_{10},c'_{11},c'_{12},c'_{13},c'_{14},c'_{15}\color{black}].$\\
     The resulting vector is the second half of the complete result:\\
-    $[\color{red}r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}]$
+    $[\color{red}r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}].$
     \item Iterate over all values for the untouched register $R_1$ and aggregate the results:\\
-     $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7,r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}]$.
+     $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7,r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}].$.
     \item Revert the mapping to the original indexes:\\ $[\color{red}r'_0,r'_1,r'_2,r'_3,r'_4,r'_5,r'_6,r'_7,r'_8,r'_9,r'_{10},r'_{11},r'_{12},r'_{13},r'_{14},r'_{15}\color{black}] =$\\
-    $[r_0,r_1,r_4,r_5,r_8,r_9,r_{12},r_{13},r_2,r_3,r_6,r_7,r_{10},r_{11},r_{14},r_{15}]$.
+    $[r_0,r_1,r_4,r_5,r_8,r_9,r_{12},r_{13},r_2,r_3,r_6,r_7,r_{10},r_{11},r_{14},r_{15}].$
 \end{enumerate}
 
 \section{Quantum operators}
